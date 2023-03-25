@@ -1,0 +1,31 @@
+{
+    "name": "ajv-tools",
+    "version": "1.0.0",
+    "private": true,
+    "description": "",
+    "scripts": {
+        "dev": "pnpm -r -parallel dev",
+        "build": "pnpm -r -parallel build",
+        "test": "vitest",
+        "lint": "prettier --check . --ignore-path .gitignore && eslint 'packages/**/*.ts' --ignore-path .gitignore",
+        "format": "prettier --write .",
+        "pkglint": "pnpm -r pkglint",
+        "ts:check": "pnpm -r ts:check"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@types/node": "^18.15.6",
+        "@typescript-eslint/eslint-plugin": "^5.56.0",
+        "@typescript-eslint/parser": "^5.56.0",
+        "eslint": "^8.36.0",
+        "eslint-config-prettier": "^8.8.0",
+        "eslint-plugin-unicorn": "^46.0.0",
+        "prettier": "^2.8.7",
+        "publint": "^0.1.11",
+        "tsup": "^6.7.0",
+        "typescript": "^5.0.2",
+        "vitest": "^0.29.7"
+    }
+}

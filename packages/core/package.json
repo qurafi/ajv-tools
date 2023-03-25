@@ -1,0 +1,25 @@
+{
+    "name": "@ajv-tools/core",
+    "version": "0.0.1",
+    "description": "",
+    "main": "./dist/main.js",
+    "module": "./dist/main.mjs",
+    "types": "./dist/main.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/main.d.ts",
+            "require": "./dist/main.js",
+            "import": "./dist/main.mjs"
+        }
+    },
+    "scripts": {
+        "build": "tsup src/main.ts --format esm,cjs --dts --sourcemap",
+        "dev": "npm run build -- --watch",
+        "ts:check": "tsc --noEmit",
+        "pkglint": "publint",
+        "test": "vitest"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "MIT"
+}
