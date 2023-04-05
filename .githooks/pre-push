@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -e
+
+pnpm install --frozen-lockfile
+pnpm lint
+pnpm ts:check
+pnpm build
+pnpm pkglint
