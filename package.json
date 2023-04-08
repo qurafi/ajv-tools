@@ -19,7 +19,7 @@
         }
     },
     "scripts": {
-        "test": "vitest",
+        "test": "DEBUG_COLORS=1 vitest",
         "build": "tsup 'src/*/main.ts' --format esm,cjs --dts --sourcemap",
         "dev": "npm run build -- --watch",
         "ts:check": "tsc --noEmit",
