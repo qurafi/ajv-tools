@@ -1,0 +1,185 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`createAjvFileStore > getSchemaFileCode should return the code and validate correctly 1`] = `
+[
+  {
+    "instancePath": "",
+    "keyword": "required",
+    "message": "must have required property 'foo'",
+    "params": {
+      "missingProperty": "foo",
+    },
+    "schemaPath": "#/required",
+  },
+]
+`;
+
+exports[`createAjvFileStore > should load all schemas 1`] = `
+[
+  [
+    "file://s/a.schema#default",
+    SchemaEnv {
+      "$async": undefined,
+      "baseId": "file://s/a.schema#default",
+      "dynamicAnchors": {},
+      "localRefs": {},
+      "meta": undefined,
+      "refs": {},
+      "root": [Circular],
+      "schema": {
+        Symbol(resolved): true,
+      },
+      "schemaId": "$id",
+      "schemaPath": undefined,
+    },
+  ],
+  [
+    "file://s/b.schema#default",
+    SchemaEnv {
+      "$async": undefined,
+      "baseId": "file://s/b.schema#default",
+      "dynamicAnchors": {},
+      "localRefs": {},
+      "meta": undefined,
+      "refs": {},
+      "root": [Circular],
+      "schema": {
+        Symbol(resolved): true,
+      },
+      "schemaId": "$id",
+      "schemaPath": undefined,
+    },
+  ],
+  [
+    "file://s/c.schema#default",
+    SchemaEnv {
+      "$async": undefined,
+      "baseId": "c",
+      "dynamicAnchors": {},
+      "localRefs": {},
+      "meta": undefined,
+      "refs": {},
+      "root": [Circular],
+      "schema": {
+        "$id": "c",
+        "properties": {
+          "a": {
+            "$ref": "a",
+          },
+        },
+        "required": [
+          "a",
+        ],
+        "type": "object",
+        Symbol(resolved): true,
+      },
+      "schemaId": "$id",
+      "schemaPath": undefined,
+    },
+  ],
+  [
+    "file://s/a.schema#a",
+    SchemaEnv {
+      "$async": undefined,
+      "baseId": "a",
+      "dynamicAnchors": {},
+      "localRefs": {},
+      "meta": undefined,
+      "refs": {},
+      "root": [Circular],
+      "schema": {
+        "$id": "a",
+        "properties": {
+          "foo": {
+            "type": "string",
+          },
+        },
+        "required": [
+          "foo",
+        ],
+        "type": "object",
+        Symbol(resolved): true,
+      },
+      "schemaId": "$id",
+      "schemaPath": undefined,
+    },
+  ],
+  [
+    "file://s/b.schema#b",
+    SchemaEnv {
+      "$async": undefined,
+      "baseId": "file://s/b.schema#b",
+      "dynamicAnchors": {},
+      "localRefs": {},
+      "meta": undefined,
+      "refs": {},
+      "root": [Circular],
+      "schema": {
+        Symbol(resolved): true,
+      },
+      "schemaId": "$id",
+      "schemaPath": undefined,
+    },
+  ],
+  [
+    "file://s/a.schema#to_be_removed",
+    SchemaEnv {
+      "$async": undefined,
+      "baseId": "to_be_removed",
+      "dynamicAnchors": {},
+      "localRefs": {},
+      "meta": undefined,
+      "refs": {},
+      "root": [Circular],
+      "schema": {
+        "$id": "to_be_removed",
+        Symbol(resolved): true,
+      },
+      "schemaId": "$id",
+      "schemaPath": undefined,
+    },
+  ],
+]
+`;
+
+exports[`createAjvFileStore > should validate correctly 1`] = `
+[
+  {
+    "instancePath": "",
+    "keyword": "required",
+    "message": "must have required property 'foo'",
+    "params": {
+      "missingProperty": "foo",
+    },
+    "schemaPath": "#/required",
+  },
+]
+`;
+
+exports[`createAjvFileStore > should validate cross-file reference 1`] = `
+[
+  {
+    "instancePath": "/a/foo",
+    "keyword": "type",
+    "message": "must be string",
+    "params": {
+      "type": "string",
+    },
+    "schemaPath": "a/properties/foo/type",
+  },
+]
+`;
+
+exports[`createAjvFileStore > should validate cross-file reference 2`] = `
+[
+  {
+    "instancePath": "/a",
+    "keyword": "required",
+    "message": "must have required property 'foo'",
+    "params": {
+      "missingProperty": "foo",
+    },
+    "schemaPath": "a/required",
+  },
+]
+`;
