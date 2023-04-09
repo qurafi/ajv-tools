@@ -141,6 +141,7 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
     }
 
     return {
+        ...schema_files,
         ajvInstances,
         build,
         isSchemaFile,
