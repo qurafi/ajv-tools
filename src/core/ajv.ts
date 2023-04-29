@@ -1,5 +1,5 @@
 import Ajv from "ajv";
-import generateAjvStandaloneCode from "ajv/dist/standalone";
+import generateAjvStandaloneCode from "ajv/dist/standalone/index.js";
 import { red, yellow } from "kleur/colors";
 import { createDebug, removeSchemaFileExt } from "../utils";
 import type { Options as AjvOptions } from "ajv";
@@ -28,11 +28,11 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
     }
 
     function addSchema(schema: any, ref?: string) {
-        return forEachInstance(([_, ajv]) => ajv.addSchema(schema, ref));
+        return forEachInstance(([, ajv]) => ajv.addSchema(schema, ref));
     }
 
     function removeSchema(schema: any) {
-        return forEachInstance(([_, ajv]) => ajv.removeSchema(schema));
+        return forEachInstance(([, ajv]) => ajv.removeSchema(schema));
     }
 
     function removeFileSchemas(file: string) {
@@ -123,6 +123,11 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
         getFileSchemas,
         removeFileSchemas,
         loadFileSchemas,
+        getSchemasWithId() {
+            return Object.values(instances.server.schemas).filter((schema) => {
+                return !schema?.meta && (schema?.schema as any)?.$id;
+            });
+        },
     };
 }
 
