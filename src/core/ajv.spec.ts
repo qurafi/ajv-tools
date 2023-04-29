@@ -1,10 +1,10 @@
 import Ajv from "ajv";
 import { unlinkSync, writeFileSync } from "node:fs";
-import { describe, expect, it } from "vitest";
+import { expect, it, suite } from "vitest";
 import { createAjvFileStore, overridenAjvOptions } from "./ajv";
 import path from "node:path";
 
-describe("createAjvFileStore", () => {
+suite("createAjvFileStore", () => {
     const modules = {
         "s/a.schema.js": {
             default: {},
