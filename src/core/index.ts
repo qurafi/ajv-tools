@@ -5,7 +5,7 @@ import micromatch from "micromatch";
 import path from "node:path";
 import { performance } from "node:perf_hooks";
 import { createDebug, ensureArray, resolvePatterns } from "../utils";
-import { createAjvFileStore, overridenAjvOptions } from "./ajv";
+import { AjvFilesStoreOptions, createAjvFileStore, overridenAjvOptions } from "./ajv";
 import { defaultModuleLoader, ModuleLoader } from "./loader";
 
 const debug = createDebug("core");
@@ -23,6 +23,10 @@ export interface SchemaBuilderOptions {
     moduleLoader?: ModuleLoader;
 
     useDirectImport?: boolean;
+
+    resolveModule?: AjvFilesStoreOptions["resolveModule"];
+
+    resolveSchema?: AjvFilesStoreOptions["resolveSchema"];
 }
 
 export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
@@ -120,24 +124,26 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
 
         if (outDir) {
             debug("writing to %s", outDir);
-            return { files, out: writeFiles(outDir) };
+            return { files, out: writeFiles(files, outDir) };
         }
 
         return { files };
     }
 
-    async function writeFiles(_outDir: string) {
+    async function writeFiles(files: string[], outDir: string) {
         //TODO
+        console.log({
+            files,
+            outDir,
+        });
     }
 
     async function resolveModule(module: Record<string, any>, file: string) {
-        //TODO some hooks?
-        return module;
+        return opts.resolveModule?.(module, file) ?? module;
     }
 
     async function resolveSchema(schema: any) {
-        //TODO some hooks?
-        return schema;
+        return opts.resolveSchema?.(schema) ?? schema;
     }
 
     return {
