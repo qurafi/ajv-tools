@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`generate code for list of dynamic import with mapping 1`] = `"export default {\\"test\\":import(\\"someprefix/test\\"),\\"test2\\":import(\\"someprefix/test2\\")}}"`;
