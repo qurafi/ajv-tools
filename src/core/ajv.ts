@@ -1,7 +1,7 @@
 import Ajv from "ajv";
 import generateAjvStandaloneCode from "ajv/dist/standalone/index.js";
 import { red, yellow } from "kleur/colors";
-import { createDebug, removeSchemaFileExt } from "../utils";
+import { createDebug, removeSchemaFileExt } from "../utils/index.js";
 import type { Options as AjvOptions } from "ajv";
 
 const debug = createDebug("files");
