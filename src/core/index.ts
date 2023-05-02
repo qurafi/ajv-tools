@@ -7,6 +7,7 @@ import { performance } from "node:perf_hooks";
 import { createDebug, ensureArray, resolvePatterns } from "../utils";
 import { AjvFilesStoreOptions, createAjvFileStore, overridenAjvOptions } from "./ajv";
 import { defaultModuleLoader, ModuleLoader } from "./loader";
+import chokidar from "chokidar";
 
 const debug = createDebug("core");
 
@@ -27,12 +28,16 @@ export interface SchemaBuilderOptions {
     resolveModule?: AjvFilesStoreOptions["resolveModule"];
 
     resolveSchema?: AjvFilesStoreOptions["resolveSchema"];
+
+    onFile?(params: { relativePath: string; reason: UpdateType }): any;
 }
+
+type UpdateType = "change" | "remove" | "add";
 
 export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
     const resolved_config = resolveConfig(opts);
 
-    const { root, exclude, include, baseDir, ajvOptions } = resolved_config;
+    const { root, exclude, include, baseDir, ajvOptions, onFile } = resolved_config;
     const root_base = path.resolve(root, baseDir || "");
     const module_loader = opts.moduleLoader ?? defaultModuleLoader;
 
@@ -68,7 +73,7 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
 
     debug("config resolved", resolved_config);
 
-    async function handleFileUpdate(type: "change" | "remove" | "add", _file: string) {
+    async function handleFileUpdate(type: UpdateType, _file: string) {
         const file = path.resolve(root_base, _file);
 
         const relative_path = path.relative(root_base, file);
@@ -94,6 +99,11 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
 
             await schema_files.loadFileSchemas(relative_path, await modules[file]);
         }
+
+        onFile?.({
+            relativePath: relative_path,
+            reason: type,
+        });
     }
 
     function isSchemaFile(file: string) {
@@ -146,10 +156,31 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
         return opts.resolveSchema?.(schema) ?? schema;
     }
 
+    function watch(watchParams: { watcher?: chokidar.FSWatcher }) {
+        if (!watchParams.watcher) {
+            watchParams.watcher = chokidar.watch(include, {
+                ignoreInitial: true,
+                ignorePermissionErrors: true,
+                ignored: exclude,
+            });
+        }
+
+        function watchFiles(reason: UpdateType) {
+            return (filename: string) => {
+                handleFileUpdate(reason, filename);
+            };
+        }
+
+        watchParams.watcher.on("change", watchFiles("change"));
+        watchParams.watcher.on("add", watchFiles("add"));
+        watchParams.watcher.on("unlink", watchFiles("remove"));
+    }
+
     return {
         ...schema_files,
         ajvInstances,
         build,
+        watch,
         isSchemaFile,
         config: resolved_config,
     };
