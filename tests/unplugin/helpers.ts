@@ -5,17 +5,12 @@ import unpluginAjv, { PluginOptions } from "../../src/unplugin";
 import { readFile, writeFile } from "fs/promises";
 import { setTimeout } from "timers/promises";
 
-export async function setupVite(
-    opts: {
-        pluginOptions?: PluginOptions;
-        viteOptions?: InlineConfig;
-    } = {}
-) {
-    const fixtures = path.resolve(__dirname, "../fixtures/vite-simple-app");
-    const src = path.resolve(fixtures, "src");
-
-    await fse.emptyDir(src);
-    await fse.copy(path.resolve(fixtures, "src_tmp"), src);
+export async function setupVite(opts: {
+    pluginOptions?: PluginOptions;
+    viteOptions?: InlineConfig;
+    fixture: string;
+}) {
+    const fixtures = path.resolve(__dirname, `../fixtures/${opts.fixture}`);
 
     opts.viteOptions = {
         root: fixtures,
@@ -32,11 +27,13 @@ export async function setupVite(
         })
     );
 
+    const src = path.resolve(opts.viteOptions.root!, "src");
+
     const server = await createServer(opts.viteOptions);
 
     await server.pluginContainer.buildStart({});
 
-    return { server, fixtures, src };
+    return { server, fixtures, src, fixture_path: fixtures };
 }
 
 export async function editFile(file: string, edit: (content: string) => string) {

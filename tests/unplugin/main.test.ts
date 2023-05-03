@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { setupVite } from "./helpers";
 
 describe("importing schemas", async () => {
-    const { server } = await setupVite();
+    const { server } = await setupVite({ fixture: "vite-simple-app" });
 
     it("should import a single schema by id", async () => {
         const module = await server.ssrLoadModule("$schemas:global_id");

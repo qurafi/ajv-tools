@@ -2,6 +2,6 @@ export default {
     type: "string",
 };
 
-export const named_changed = {
+export const named = {
     type: "number",
 };

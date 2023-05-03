@@ -103,9 +103,10 @@ export default createUnplugin((config: PluginOptions) => {
                         case "all": {
                             const { files } = schema_builder;
                             const code = generateDynamicImportsCode(
-                                Object.keys(files),
+                                [...files.keys()],
                                 (file) => `$schemas/${file}`
                             );
+                            debug({ code });
                             return code;
                         }
                         // case "ids":
