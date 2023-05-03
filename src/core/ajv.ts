@@ -3,13 +3,20 @@ import generateAjvStandaloneCode from "ajv/dist/standalone/index.js";
 import { red, yellow } from "kleur/colors";
 import { createDebug, removeSchemaFileExt } from "../utils/index.js";
 import type { Options as AjvOptions } from "ajv";
+import rfdc from "rfdc";
+
+const clone = rfdc();
 
 const debug = createDebug("files");
 
 export interface AjvFilesStoreOptions {
     ajvInstances: Record<string, Ajv>;
     resolveModule(module: Record<string, unknown>, file: string): Record<string, any>;
-    resolveSchema(schema: any): any;
+    resolveSchema(schema: any, source: string): any;
+}
+
+export interface SchemaOption {
+    [key: string]: any;
 }
 
 export function createAjvFileStore(opts: AjvFilesStoreOptions) {
@@ -17,22 +24,29 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
 
     const id_key = "$id";
 
-    const files: Partial<Record<string, Map<string, any>>> = {};
+    const options_prop = "$$options";
+
+    const files = new Map<string, Map<string, any>>();
 
     function getFileSchemas(file: string) {
-        return files[removeSchemaFileExt(file)];
+        return files.get(removeSchemaFileExt(file));
     }
+
+    // function getSchemaOptions();
 
     function forEachInstance(cb: (value: [string, Ajv]) => void) {
         return Object.entries(instances).forEach(cb);
     }
 
-    function addSchema(schema: any, ref?: string) {
+    function addSchema(schema: any, ref: string) {
+        // options.set(ref, schema[options_prop]);
+        // delete schema[options_prop];
         return forEachInstance(([, ajv]) => ajv.addSchema(schema, ref));
     }
 
-    function removeSchema(schema: any) {
-        return forEachInstance(([, ajv]) => ajv.removeSchema(schema));
+    function removeSchema(ref: string) {
+        // options.delete(ref);
+        return forEachInstance(([, ajv]) => ajv.removeSchema(ref));
     }
 
     function removeFileSchemas(file: string) {
@@ -42,8 +56,6 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
             return;
         }
 
-        debug("removeFileSchemas", { file, file_schemas });
-
         for (const [ref, schema] of file_schemas.entries()) {
             if (schema[id_key] != undefined) {
                 removeSchema(schema[id_key]);
@@ -52,17 +64,12 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
             removeSchema(resolveSchemaRef(file, ref));
         }
 
-        file_schemas.clear();
+        files.delete(removeSchemaFileExt(file));
     }
 
     async function loadFileSchemas(file: string, module: Record<string, unknown>) {
-        debug("loading file schemas: %o", { file, module });
-
         const schemas = await resolveModule(module, file);
         const schemas_entries = Object.entries(schemas);
-        debug({ schemas, schemas_entries });
-
-        debug({ schemas_entries });
 
         if (schemas_entries.length === 0) {
             console.log(yellow(`Warning: ${file}: does not export any schema`));
@@ -70,11 +77,12 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
 
         removeFileSchemas(file);
 
-        const file_schemas = (files[removeSchemaFileExt(file)] ??= new Map());
+        const file_schemas = new Map();
+
+        files.set(removeSchemaFileExt(file), file_schemas);
 
         for (const [export_name, raw_schema] of schemas_entries) {
-            const schema = await resolveSchema(raw_schema);
-            debug("resolved schema", schema);
+            const schema = await resolveSchema(clone(raw_schema), file);
 
             if (schema == undefined) {
                 continue;
@@ -87,8 +95,9 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
 
             const ref = resolveSchemaRef(file, export_name);
 
-            debug("adding a schema:", { schema, ref });
-
+            // // we don't need deep clone. just to allow schema to have options because ajv throw errors on unknown keywords
+            const schema_clone = { ...schema };
+            delete schema_clone[options_prop];
             addSchema(schema, ref);
             file_schemas.set(export_name, schema);
         }

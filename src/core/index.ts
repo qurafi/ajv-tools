@@ -152,8 +152,8 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
         return opts.resolveModule?.(module, file) ?? module;
     }
 
-    async function resolveSchema(schema: any) {
-        return opts.resolveSchema?.(schema) ?? schema;
+    async function resolveSchema(schema: any, file: string) {
+        return opts.resolveSchema?.(schema, file) ?? schema;
     }
 
     function watch(watchParams: { watcher?: chokidar.FSWatcher }) {
