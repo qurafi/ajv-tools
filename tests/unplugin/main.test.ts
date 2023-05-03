@@ -36,7 +36,7 @@ describe("importing schemas", async () => {
         console.log(module);
     });
 
-    function validateDefaultExport(default_export) {
+    function validateDefaultExport(default_export: any) {
         const validate = default_export?.default;
         expect(Object.keys(default_export)).toEqual(["default", "named"]);
         expect(validate).toBeTypeOf("function");
