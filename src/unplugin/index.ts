@@ -126,7 +126,9 @@ export default createUnplugin((config: PluginOptions) => {
                     if (!schema_path) {
                         throw new Error("Schema path must be supplied");
                     }
-                    if (raw_schema !== undefined) {
+
+                    console.log({ raw_schema });
+                    if (raw_schema != null) {
                         debug("raw schema");
                         const file_schemas = schema_builder.getFileSchemas(schema_path);
                         if (!file_schemas) {
