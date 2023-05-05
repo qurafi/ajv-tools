@@ -9,6 +9,7 @@ import {
 import { transformCJS } from "../utils/code/cjs_to_esm.js";
 import { generateDynamicImportsCode } from "../utils/code/generate_import_code.js";
 import { createDebug, parseQueries, removeSchemaFileExt } from "../utils/index.js";
+import { resolveSchemaRef } from "../core/ajv.js";
 
 const IMPORT_PREFIX = "$schemas";
 
@@ -120,9 +121,34 @@ export default createUnplugin((config: PluginOptions) => {
 
                 // schema by path
                 if (schema_ref.startsWith("/")) {
+                    const raw_schema = queries.get("raw");
                     const schema_path = removeSchemaFileExt(schema_ref.slice(1));
                     if (!schema_path) {
                         throw new Error("Schema path must be supplied");
+                    }
+                    if (raw_schema !== undefined) {
+                        debug("raw schema");
+                        const file_schemas = schema_builder.getFileSchemas(schema_path);
+                        if (!file_schemas) {
+                            return;
+                        }
+
+                        const schemas = [...file_schemas.entries()].map(
+                            ([ref, schema]) => {
+                                return [
+                                    ref,
+                                    raw_schema == "resolved"
+                                        ? schema
+                                        : schema_builder.ajvInstances.server.getSchema(
+                                              resolveSchemaRef(schema_path, ref)
+                                          )?.schema,
+                                ];
+                            }
+                        );
+                        debug({ schemas, file_schemas });
+                        return `export default ${JSON.stringify(
+                            Object.fromEntries(schemas)
+                        )}`;
                     }
                     const code = schema_builder.getSchemaFileCode("server", schema_path);
                     if (!code) {

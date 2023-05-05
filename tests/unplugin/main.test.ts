@@ -50,6 +50,26 @@ describe("importing schemas", async () => {
         validateDefaultExport(module);
     });
 
+    it.only("should import raw schema when adding ?raw query by file", async () => {
+        const module = await server.ssrLoadModule("$schemas/schemas/default_export?raw");
+        const schemas = module.default;
+        expect(schemas).toEqual({
+            default: { type: "string" },
+            named: { type: "number" },
+        });
+    });
+
+    it.only("should import raw schema when adding ?raw=resolved query by file", async () => {
+        const module = await server.ssrLoadModule(
+            "$schemas/schemas/default_export?raw=resolved"
+        );
+        const original = {
+            ...(await import("../fixtures/vite-simple-app/src/schemas/default_export")),
+        };
+        // we didn't mutate the schema when resolving it in the builder and the source schema is technically the resolved one
+        expect(module.default).toEqual(original);
+    });
+
     it("should import all schemas files", async () => {
         const module = await server.ssrLoadModule("$schemas?t=all");
         const default_export = await module.default?.["schemas/default_export"]?.();
