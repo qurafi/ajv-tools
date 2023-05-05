@@ -98,7 +98,7 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
             // // we don't need deep clone. just to allow schema to have options because ajv throw errors on unknown keywords
             const schema_clone = { ...schema };
             delete schema_clone[options_prop];
-            addSchema(schema, ref);
+            addSchema(schema_clone, ref);
             file_schemas.set(export_name, schema);
         }
     }
