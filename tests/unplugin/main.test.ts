@@ -52,7 +52,7 @@ describe("importing schemas", async () => {
 
     it("should import all schemas files", async () => {
         const module = await server.ssrLoadModule("$schemas?t=all");
-        const default_export = await module.default?.["schemas/default_export"];
+        const default_export = await module.default?.["schemas/default_export"]?.();
 
         validateDefaultExport(default_export);
     });

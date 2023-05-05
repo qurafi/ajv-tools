@@ -31,7 +31,7 @@ describe("vite hot reloading schemas", async () => {
                 const default_export = "schemas/default_export";
                 const m = (await server.ssrLoadModule("./src/importer-all")).default;
                 expect(m).toHaveProperty(default_export);
-                const schemas = await m[default_export];
+                const schemas = await m[default_export]?.();
                 expect(schemas).toBeDefined();
                 const named = changed ? "named_changed" : "named";
                 expect(Object.keys(schemas)).toEqual(["default", named]);
