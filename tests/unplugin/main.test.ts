@@ -9,7 +9,7 @@ describe("importing schemas", async () => {
         expect(module.validate).toStrictEqual(module.default);
         expect(module.validate).toBeTypeOf("function");
         expect(module.validate("test")).toBe(true);
-        expect(module.validate(1)).toBe(false);
+        expect(module.validate({})).toBe(false);
         expect(module.validate()).toBe(false);
     });
 
@@ -41,7 +41,7 @@ describe("importing schemas", async () => {
         expect(Object.keys(default_export)).toEqual(["default", "named"]);
         expect(validate).toBeTypeOf("function");
         expect(validate("test")).toBe(true);
-        expect(validate(1)).toBe(false);
+        expect(validate({})).toBe(false);
         expect(validate()).toBe(false);
     }
 
@@ -50,7 +50,7 @@ describe("importing schemas", async () => {
         validateDefaultExport(module);
     });
 
-    it.only("should import raw schema when adding ?raw query by file", async () => {
+    it("should import raw schema when adding ?raw query by file", async () => {
         const module = await server.ssrLoadModule("$schemas/schemas/default_export?raw");
         const schemas = module.default;
         expect(schemas).toEqual({
@@ -59,7 +59,7 @@ describe("importing schemas", async () => {
         });
     });
 
-    it.only("should import raw schema when adding ?raw=resolved query by file", async () => {
+    it("should import raw schema when adding ?raw=resolved query by file", async () => {
         const module = await server.ssrLoadModule(
             "$schemas/schemas/default_export?raw=resolved"
         );
