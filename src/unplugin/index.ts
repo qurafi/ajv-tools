@@ -1,4 +1,3 @@
-import generateAjvStandaloneCode from "ajv/dist/standalone/index.js";
 import { createUnplugin } from "unplugin";
 import { ViteDevServer } from "vite";
 import {
@@ -6,7 +5,6 @@ import {
     SchemaBuilder,
     SchemaBuilderOptions,
 } from "../core/index.js";
-import { transformCJS } from "../utils/code/cjs_to_esm.js";
 import { generateDynamicImportsCode } from "../utils/code/generate_import_code.js";
 import { createDebug, parseQueries, removeSchemaFileExt } from "../utils/index.js";
 import { resolveSchemaRef } from "../core/ajv.js";
@@ -15,7 +13,7 @@ const IMPORT_PREFIX = "$schemas";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface PluginOptions extends SchemaBuilderOptions {
-    //
+    //TODO
 }
 
 const debug = createDebug("unplugin");
@@ -127,7 +125,7 @@ export default createUnplugin((config: PluginOptions) => {
                         throw new Error("Schema path must be supplied");
                     }
 
-                    console.log({ raw_schema });
+                    // console.log({ raw_schema });
                     if (raw_schema != null) {
                         debug("raw schema");
                         const file_schemas = schema_builder.getFileSchemas(schema_path);
@@ -165,15 +163,8 @@ export default createUnplugin((config: PluginOptions) => {
                     if (!id) {
                         throw new Error("Schema id is not provided");
                     }
-                    const ajv = schema_builder.ajvInstances.server;
-                    const schema = ajv.getSchema(id);
-                    if (!schema) {
-                        throw new Error(`schema with $id:${id} is not found`);
-                    }
-                    const code = generateAjvStandaloneCode(ajv, schema);
-                    const esm = transformCJS(code);
-                    //TODO allow user to customize code?
-                    return esm;
+                    //TODO allow to customize instance and detect client builds with vite
+                    return schema_builder.getSchemaCode(id, "server");
                 }
 
                 throw new Error(`Could not resovle schema import ${raw_id}`);

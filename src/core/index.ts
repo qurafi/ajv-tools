@@ -5,7 +5,14 @@ import micromatch from "micromatch";
 import path from "node:path";
 import { performance } from "node:perf_hooks";
 import { createDebug, ensureArray, resolvePatterns } from "../utils";
-import { AjvFilesStoreOptions, createAjvFileStore, overridenAjvOptions } from "./ajv";
+import {
+    AjvFilesStoreOptions,
+    ajvOptionsClient,
+    ajvOptionsServer,
+    createAjvFileStore,
+    enforcedAjvOptions,
+    initInstances,
+} from "./ajv";
 import { defaultModuleLoader, ModuleLoader } from "./loader";
 import chokidar from "chokidar";
 
@@ -20,6 +27,7 @@ export interface SchemaBuilderOptions {
     exclude?: string | string[];
 
     ajvOptions?: AjvOptions;
+    clientAjvOptions?: AjvOptions | false;
 
     moduleLoader?: ModuleLoader;
 
@@ -37,33 +45,17 @@ type UpdateType = "change" | "remove" | "add";
 export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
     const resolved_config = resolveConfig(opts);
 
-    const { root, exclude, include, baseDir, ajvOptions, onFile } = resolved_config;
+    const { root, exclude, include, baseDir, ajvOptions, clientAjvOptions, onFile } =
+        resolved_config;
     const root_base = path.resolve(root, baseDir || "");
     const module_loader = opts.moduleLoader ?? defaultModuleLoader;
 
     const ajvInstances = {
         server: new Ajv(ajvOptions),
+        client: new Ajv(clientAjvOptions),
     };
 
-    //TODO refactor this to support multiple instances
-    const addFormats = (await import("ajv-formats")).default;
-
-    addFormats(ajvInstances.server, [
-        "date-time",
-        "time",
-        "date",
-        "email",
-        "hostname",
-        "ipv4",
-        "ipv6",
-        "uri",
-        "uri-reference",
-        "uuid",
-        "uri-template",
-        "json-pointer",
-        "relative-json-pointer",
-        "regex",
-    ]);
+    initInstances(ajvInstances);
 
     const schema_files = createAjvFileStore({
         ajvInstances,
@@ -191,8 +183,21 @@ function resolveConfig(options: SchemaBuilderOptions) {
 
     return {
         ...options,
+
         root,
-        ajvOptions: { ...options.ajvOptions, ...overridenAjvOptions } as AjvOptions,
+
+        ajvOptions: {
+            ...options.ajvOptions,
+            ...enforcedAjvOptions,
+            ...ajvOptionsServer,
+        } as AjvOptions,
+
+        clientAjvOptions: {
+            ...options.ajvOptions,
+            ...enforcedAjvOptions,
+            ...ajvOptionsClient,
+        } as AjvOptions,
+
         include: resolvePatterns(ensureArray(options.include), root),
         exclude: resolvePatterns(ensureArray(options.exclude ?? []), root),
     };

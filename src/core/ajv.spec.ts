@@ -1,7 +1,7 @@
 import Ajv from "ajv";
 import { unlinkSync, writeFileSync } from "node:fs";
 import { expect, it, suite } from "vitest";
-import { createAjvFileStore, overridenAjvOptions } from "./ajv";
+import { createAjvFileStore, enforcedAjvOptions } from "./ajv";
 import path from "node:path";
 
 suite("createAjvFileStore", () => {
@@ -36,7 +36,7 @@ suite("createAjvFileStore", () => {
         },
     };
 
-    const ajv = new Ajv(overridenAjvOptions);
+    const ajv = new Ajv(enforcedAjvOptions);
     const resolved_symbol = Symbol("resolved");
     const resolved_files: string[] = [];
 

@@ -4,6 +4,9 @@ import { red, yellow } from "kleur/colors";
 import { createDebug, removeSchemaFileExt } from "../utils/index.js";
 import type { Options as AjvOptions } from "ajv";
 import rfdc from "rfdc";
+import addFormats from "ajv-formats";
+import { AjvCompileOptions, schema_opts } from "./ajv_options.js";
+import { transformCJS } from "../utils/code/cjs_to_esm.js";
 
 const clone = rfdc();
 
@@ -11,41 +14,50 @@ const debug = createDebug("files");
 
 export interface AjvFilesStoreOptions {
     ajvInstances: Record<string, Ajv>;
-    resolveModule(module: Record<string, unknown>, file: string): Record<string, any>;
-    resolveSchema(schema: any, source: string): any;
+    resolveModule?(module: Record<string, unknown>, file: string): Record<string, any>;
+    resolveSchema?(schema: any, source: string): any;
 }
 
-export interface SchemaOption {
+export interface SchemaMeta {
+    options: AjvCompileOptions;
     [key: string]: any;
 }
 
 export function createAjvFileStore(opts: AjvFilesStoreOptions) {
-    const { ajvInstances: instances, resolveSchema, resolveModule } = opts;
+    const {
+        ajvInstances: instances,
+        resolveSchema = (schema) => schema,
+        resolveModule = (mod) => mod,
+    } = opts;
 
     const id_key = "$id";
 
-    const options_prop = "$$options";
+    const meta_prop = "$$meta";
 
     const files = new Map<string, Map<string, any>>();
+
+    const instance_entries = Object.entries(instances);
+
+    const default_instance = instance_entries[0]?.[1];
+    if (!default_instance) {
+        throw new Error("expecting at least on ajv instance");
+    }
 
     function getFileSchemas(file: string) {
         return files.get(removeSchemaFileExt(file));
     }
 
-    // function getSchemaOptions();
-
+    // multiple instances so we can have different options for the server and the client
+    // all schemas are stored in each instance
     function forEachInstance(cb: (value: [string, Ajv]) => void) {
-        return Object.entries(instances).forEach(cb);
+        return instance_entries.forEach(cb);
     }
 
     function addSchema(schema: any, ref: string) {
-        // options.set(ref, schema[options_prop]);
-        // delete schema[options_prop];
         return forEachInstance(([, ajv]) => ajv.addSchema(schema, ref));
     }
 
     function removeSchema(ref: string) {
-        // options.delete(ref);
         return forEachInstance(([, ajv]) => ajv.removeSchema(ref));
     }
 
@@ -95,19 +107,23 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
 
             const ref = resolveSchemaRef(file, export_name);
 
-            // // we don't need deep clone. just to allow schema to have options because ajv throw errors on unknown keywords
             const schema_clone = { ...schema };
-            delete schema_clone[options_prop];
+
+            // see ajv_options.ts for context
+            const meta = schema_clone[meta_prop];
+            if (meta?.options) {
+                schema_opts.set(schema_clone, meta.options);
+            }
+
+            delete schema_clone[meta_prop];
+
             addSchema(schema_clone, ref);
             file_schemas.set(export_name, schema);
         }
     }
 
-    function getSchemaFileCode(instance: keyof typeof instances, file: string) {
-        const ajv = instances[instance];
-        if (!ajv) {
-            throw Error(`Could not find ajv instance "${instance}"`);
-        }
+    function getSchemaFileCode(instance: string, file: string) {
+        const ajv = ensureInstance(instance);
 
         const file_schemas = getFileSchemas(file);
         if (!file_schemas) {
@@ -118,48 +134,136 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
             return [ref, resolveSchemaRef(file, ref)];
         });
 
-        let code = generateAjvStandaloneCode(ajv, Object.fromEntries(refs));
-        code = code.replace("export const default =", "export default");
-        code = code.replace('"use strict";', "");
+        const code = generateAjvStandaloneCode(ajv, Object.fromEntries(refs))
+            .replace("export const default =", "export default")
+            .replace('"use strict";', "");
 
-        return code;
+        return transformCJS(code);
+    }
+
+    function getSchemaCode(ref: string, instance: string) {
+        const ajv = ensureInstance(instance);
+        const schema = ajv.getSchema(ref);
+        if (!schema) {
+            throw new Error(`schema with key or $id: ${ref} is not found`);
+        }
+
+        const code = generateAjvStandaloneCode(ajv, schema);
+        return transformCJS(code);
+    }
+
+    /** Generate code represent all defined schema in a file */
+    function getFileJsonSchemasCode(
+        file: string,
+        /** return false(default) to return the schema as stored in ajv instance
+         *
+         * true to get the schema as stored in file store
+         * which could have more information such as in $$meta property
+         */
+        resolved = false
+    ) {
+        const file_schemas = getFileSchemas(file);
+        if (!file_schemas) {
+            return;
+        }
+
+        const schemas = [...file_schemas.entries()].map(([ref, schema]) => {
+            if (resolved) {
+                return [ref, schema];
+            }
+            const full_ref = resolveSchemaRef(file, ref);
+            const ajv_schema = default_instance.getSchema(full_ref)?.schema;
+            return [ref, ajv_schema];
+        });
+
+        //TODO make it as named exports for treeshaking? or atleast as an option
+        return `export default ${JSON.stringify(Object.fromEntries(schemas))}`;
+    }
+
+    function ensureInstance(instance: string) {
+        const ajv = instances[instance];
+        if (!ajv) {
+            throw Error(`Could not find ajv instance "${instance}"`);
+        }
+        return ajv;
+    }
+
+    function getSchemasWithId() {
+        return Object.values(default_instance.schemas).filter((schema) => {
+            return !schema?.meta && (schema?.schema as any)?.$id;
+        });
     }
 
     return {
         instances,
         files,
+        getFileJsonSchemasCode,
         getSchemaFileCode,
+        getSchemaCode,
         getFileSchemas,
         removeFileSchemas,
         loadFileSchemas,
-        getSchemasWithId() {
-            return Object.values(instances.server.schemas).filter((schema) => {
-                return !schema?.meta && (schema?.schema as any)?.$id;
-            });
-        },
+        getSchemasWithId,
     };
+}
+
+export function initInstances(instances: Record<string, Ajv>) {
+    for (const instance of Object.values(instances)) {
+        addFormats(instance, [
+            "date-time",
+            "time",
+            "date",
+            "email",
+            "hostname",
+            "ipv4",
+            "ipv6",
+            "uri",
+            "uri-reference",
+            "uuid",
+            "uri-template",
+            "json-pointer",
+            "relative-json-pointer",
+            "regex",
+            /** not actual format but a hint for the ui */
+            "password",
+        ]);
+    }
 }
 
 export function resolveSchemaRef(file: string, ref: string) {
     return `file://${removeSchemaFileExt(file)}#${ref}`;
 }
 
-export const overridenAjvOptions: AjvOptions = {
-    allErrors: false,
+export const enforcedAjvOptions: AjvOptions = {
     code: {
         esm: true,
         source: true,
         optimize: 2,
+        lines: true,
     },
+
     logger: {
+        // currently error is not used because strict=true
         error: (...args: any[]) => console.error(red("ajv error: "), ...args),
-        warn: (...args: any[]) => console.warn(yellow("ajv warning: "), ...args),
+        warn: (...args: any[]) => console.log(yellow("ajv warning: "), ...args),
         log: console.log,
     },
 };
 
+/** server options optmized for speed */
 export const ajvOptionsServer: AjvOptions = {
+    allErrors: false,
     removeAdditional: true,
     useDefaults: true,
     coerceTypes: true,
+};
+
+/** optmized for size */
+export const ajvOptionsClient: AjvOptions = {
+    inlineRefs: false,
+    allErrors: true,
+    useDefaults: false,
+    coerceTypes: false,
+    loopRequired: 4,
+    loopEnum: 4,
 };

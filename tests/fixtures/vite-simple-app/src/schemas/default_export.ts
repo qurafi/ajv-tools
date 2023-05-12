@@ -3,7 +3,7 @@ export default {
 };
 
 export const named = {
-    $$options: {
+    $$meta: {
         a: "removed from ajv instance but visible for builder",
     },
     type: "number",
