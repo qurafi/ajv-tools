@@ -93,7 +93,11 @@ export default createUnplugin((config: PluginOptions) => {
 
                 const { queries, str: id } = parseQueries(raw_id);
                 const schema_ref = id.slice(resolved_prefix.length);
-                debug_load("loading", id, queries, schema_ref, "\n");
+                //TODO make default instance user configurable
+                const instance_q = queries.get("instance");
+                const instance = instance_q ?? "server";
+
+                debug_load("loading", id, queries, schema_ref, instance, "\n");
 
                 if (id == resolved_prefix && queries.get("t")) {
                     const t = queries.get("t");
@@ -128,29 +132,19 @@ export default createUnplugin((config: PluginOptions) => {
                     // console.log({ raw_schema });
                     if (raw_schema != null) {
                         debug("raw schema");
-                        const file_schemas = schema_builder.getFileSchemas(schema_path);
-                        if (!file_schemas) {
-                            return;
-                        }
-
-                        const schemas = [...file_schemas.entries()].map(
-                            ([ref, schema]) => {
-                                return [
-                                    ref,
-                                    raw_schema == "resolved"
-                                        ? schema
-                                        : schema_builder.ajvInstances.server.getSchema(
-                                              resolveSchemaRef(schema_path, ref)
-                                          )?.schema,
-                                ];
-                            }
+                        const code = schema_builder.getFileJsonSchemasCode(
+                            schema_path,
+                            !!instance_q || instance_q == "server"
                         );
-                        debug({ schemas, file_schemas });
-                        return `export default ${JSON.stringify(
-                            Object.fromEntries(schemas)
-                        )}`;
+                        if (!code) {
+                            throw new Error(
+                                `Could not find schema for file ${schema_path}`
+                            );
+                        }
+                        return code;
                     }
                     const code = schema_builder.getSchemaFileCode("server", schema_path);
+                    //TODO move error to original function
                     if (!code) {
                         throw new Error(`Could not find schema for file ${schema_path}`);
                     }

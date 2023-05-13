@@ -122,6 +122,7 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
         }
     }
 
+    /** Generate validation code for all schemas in a file */
     function getSchemaFileCode(instance: string, file: string) {
         const ajv = ensureInstance(instance);
 
@@ -141,6 +142,7 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
         return transformCJS(code);
     }
 
+    /** Generate a schema validation code */
     function getSchemaCode(ref: string, instance: string) {
         const ajv = ensureInstance(instance);
         const schema = ajv.getSchema(ref);
@@ -155,12 +157,12 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
     /** Generate code represent all defined schema in a file */
     function getFileJsonSchemasCode(
         file: string,
-        /** return false(default) to return the schema as stored in ajv instance
+        /** server=true, return a json schema with extra information($$meta)
          *
-         * true to get the schema as stored in file store
-         * which could have more information such as in $$meta property
+         * server=false, return the json schema as stored in ajv and without $$meta prop
+         * to avoid leaking schema information to client
          */
-        resolved = false
+        server = false
     ) {
         const file_schemas = getFileSchemas(file);
         if (!file_schemas) {
@@ -168,7 +170,7 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
         }
 
         const schemas = [...file_schemas.entries()].map(([ref, schema]) => {
-            if (resolved) {
+            if (server) {
                 return [ref, schema];
             }
             const full_ref = resolveSchemaRef(file, ref);

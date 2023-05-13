@@ -59,9 +59,9 @@ describe("importing schemas", async () => {
         });
     });
 
-    it("should import raw schema when adding ?raw=resolved query by file", async () => {
+    it("should import raw schema when adding ?raw&instance=server query by file", async () => {
         const module = await server.ssrLoadModule(
-            "$schemas/schemas/default_export?raw=resolved"
+            "$schemas/schemas/default_export?raw&instance=server"
         );
         const original = {
             ...(await import("../fixtures/vite-simple-app/src/schemas/default_export")),
