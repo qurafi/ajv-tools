@@ -1,8 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { setupVite } from "./helpers";
+import puppeteer from "puppeteer";
 
 describe("importing schemas", async () => {
     const { server } = await setupVite({ fixture: "vite-simple-app" });
+
+    await server.listen(5174);
+
+    const url = server.resolvedUrls?.local?.[0] as string;
 
     it("should import a single schema by id", async () => {
         const module = await server.ssrLoadModule("$schemas:global_id");
@@ -50,8 +55,31 @@ describe("importing schemas", async () => {
         validateDefaultExport(module);
     });
 
-    it("should import raw schema when adding ?raw query by file", async () => {
+    async function testServerJSONSchema(mod: any) {
+        const original = {
+            ...(await import("../fixtures/vite-simple-app/src/schemas/default_export")),
+        };
+        // we didn't mutate the schema when resolving it in the builder and the source schema is technically the resolved one
+        expect(mod.default).toEqual(original);
+    }
+
+    it("should import raw schema when adding ?raw with defaults query by file", async () => {
         const module = await server.ssrLoadModule("$schemas/schemas/default_export?raw");
+        testServerJSONSchema(module);
+    });
+
+    it("should import raw schema when adding ?raw&instance=server query by file", async () => {
+        const module = await server.ssrLoadModule(
+            "$schemas/schemas/default_export?raw&instance=server"
+        );
+
+        testServerJSONSchema(module);
+    });
+
+    it("should import raw schema when adding ?raw&instance=client query by file", async () => {
+        const module = await server.ssrLoadModule(
+            "$schemas/schemas/default_export?raw&instance=client"
+        );
         const schemas = module.default;
         expect(schemas).toEqual({
             default: { type: "string" },
@@ -59,15 +87,36 @@ describe("importing schemas", async () => {
         });
     });
 
-    it("should import raw schema when adding ?raw&instance=server query by file", async () => {
-        const module = await server.ssrLoadModule(
-            "$schemas/schemas/default_export?raw&instance=server"
-        );
-        const original = {
-            ...(await import("../fixtures/vite-simple-app/src/schemas/default_export")),
-        };
-        // we didn't mutate the schema when resolving it in the builder and the source schema is technically the resolved one
-        expect(module.default).toEqual(original);
+    async function testClientBuilds(invalid: boolean) {
+        const browser = await puppeteer.launch({
+            headless: "new",
+        });
+
+        const page = await browser.newPage();
+
+        await page.goto(url + (invalid ? "index_invalid.html" : ""));
+
+        const json = await page.$eval("body", (body) => body.textContent);
+
+        console.log(await page.content());
+        expect(json).toBeDefined();
+        expect((json?.length ?? 0) > 3).toBe(!invalid);
+        if (!invalid) {
+            const schema = JSON.parse(json!);
+            console.log(schema);
+            expect(schema).toEqual({
+                default: { type: "string" },
+                named: { type: "number" },
+            });
+        }
+    }
+
+    it.only("importing raw json schema shuold not have $$meta props", async () => {
+        await testClientBuilds(false);
+    });
+
+    it.only("importing raw json schema with instance=server should throw error in client side", async () => {
+        await testClientBuilds(true);
     });
 
     it("should import all schemas files", async () => {
