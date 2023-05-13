@@ -54,12 +54,27 @@ export default createUnplugin((config: PluginOptions) => {
 
                 const file = removeSchemaFileExt(relativePath);
 
-                const module = vite_server.moduleGraph.getModuleById(
-                    `\0$schemas/${file}`
-                );
+                // const module = vite_server.moduleGraph.getModuleById(
+                //     `\0$schemas/${file}`
+                // );
+
+                // so we could support ?queries params
+                const file_prefix = `\0$schemas/${file}`;
+
+                const modules_to_reload: Promise<void>[] = [];
+
+                for (const id of vite_server.moduleGraph.idToModuleMap.keys()) {
+                    if (id.startsWith(file_prefix)) {
+                        console.log(id);
+                        const module = vite_server.moduleGraph.getModuleById(id);
+                        if (module) {
+                            modules_to_reload.push(vite_server.reloadModule(module));
+                        }
+                    }
+                }
 
                 if (module) {
-                    await vite_server.reloadModule(module);
+                    await Promise.all(modules_to_reload);
                 }
 
                 //TODO reload by id
@@ -69,6 +84,14 @@ export default createUnplugin((config: PluginOptions) => {
         build_promise = schema_builder.build();
         await build_promise;
     }
+
+    function resolveId(id: string) {
+        if (id.startsWith(IMPORT_PREFIX)) {
+            return `\0${id}`;
+        }
+        return null;
+    }
+
     return {
         name: "unplugin-ajv-tools",
 
@@ -81,11 +104,7 @@ export default createUnplugin((config: PluginOptions) => {
             }
         },
 
-        resolveId(id, _importer, _options) {
-            if (id.startsWith(IMPORT_PREFIX)) {
-                return `\0${id}`;
-            }
-        },
+        resolveId,
 
         async load(raw_id) {
             if (raw_id.startsWith(resolved_prefix)) {
@@ -123,18 +142,18 @@ export default createUnplugin((config: PluginOptions) => {
 
                 // schema by path
                 if (schema_ref.startsWith("/")) {
-                    const raw_schema = queries.get("raw");
+                    const raw_schema = queries.has("raw");
                     const schema_path = removeSchemaFileExt(schema_ref.slice(1));
                     if (!schema_path) {
                         throw new Error("Schema path must be supplied");
                     }
 
                     // console.log({ raw_schema });
-                    if (raw_schema != null) {
+                    if (raw_schema) {
                         debug("raw schema");
                         const code = schema_builder.getFileJsonSchemasCode(
                             schema_path,
-                            !!instance_q || instance_q == "server"
+                            instance == "server"
                         );
                         if (!code) {
                             throw new Error(
@@ -171,6 +190,21 @@ export default createUnplugin((config: PluginOptions) => {
             },
             async configureServer(server) {
                 vite_server = server;
+            },
+
+            resolveId(source, importer, { ssr }) {
+                const raw_id = resolveId(source);
+                if (raw_id != null) {
+                    const instance = ssr ? "server" : "client";
+                    const { queries, str: id } = parseQueries(raw_id);
+                    const user_instance = queries.get("instance");
+                    if (user_instance == "server" && !ssr) {
+                        throw new Error("Using a server instance inside a client build");
+                    } else if (!user_instance) {
+                        queries.set("instance", instance);
+                    }
+                    return `${id}?${queries.toString()}`;
+                }
             },
         },
     };
