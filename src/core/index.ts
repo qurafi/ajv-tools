@@ -45,8 +45,17 @@ type UpdateType = "change" | "remove" | "add";
 export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
     const resolved_config = resolveConfig(opts);
 
-    const { root, exclude, include, baseDir, ajvOptions, clientAjvOptions, onFile } =
-        resolved_config;
+    const {
+        root,
+        exclude,
+        include,
+        baseDir,
+        ajvOptions,
+        clientAjvOptions,
+        onFile,
+        resolveModule,
+        resolveSchema,
+    } = resolved_config;
     const root_base = path.resolve(root, baseDir || "");
     const module_loader = opts.moduleLoader ?? defaultModuleLoader;
 
@@ -138,14 +147,6 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
             files,
             outDir,
         });
-    }
-
-    async function resolveModule(module: Record<string, any>, file: string) {
-        return opts.resolveModule?.(module, file) ?? module;
-    }
-
-    async function resolveSchema(schema: any, file: string) {
-        return opts.resolveSchema?.(schema, file) ?? schema;
     }
 
     function watch(watchParams: { watcher?: chokidar.FSWatcher }) {
