@@ -15,8 +15,12 @@ import {
 } from "./ajv";
 import { defaultModuleLoader, ModuleLoader } from "./loader";
 import chokidar from "chokidar";
+import { Plugin } from "./plugins/plugin.types";
+import { createPluginContainer } from "./plugins/plugins.js";
 
 const debug = createDebug("core");
+
+export { Plugin };
 
 export interface SchemaBuilderOptions {
     root?: string;
@@ -38,6 +42,8 @@ export interface SchemaBuilderOptions {
     resolveSchema?: AjvFilesStoreOptions["resolveSchema"];
 
     onFile?(params: { relativePath: string; reason: UpdateType }): any;
+
+    plugins?: Plugin[];
 }
 
 type UpdateType = "change" | "remove" | "add";
@@ -56,8 +62,11 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
         resolveModule,
         resolveSchema,
     } = resolved_config;
+
     const root_base = path.resolve(root, baseDir || "");
     const module_loader = opts.moduleLoader ?? defaultModuleLoader;
+
+    const plugins = await createPluginContainer(opts.plugins);
 
     const ajvInstances = {
         server: new Ajv(ajvOptions),
@@ -71,6 +80,17 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
         resolveModule,
         resolveSchema,
     });
+
+    const builder = {
+        ...schema_files,
+        ajvInstances,
+        build,
+        watch,
+        isSchemaFile,
+        config: resolved_config,
+    };
+
+    plugins.invokeConcurrent("init", { config: resolved_config, builder });
 
     debug("config resolved", resolved_config);
 
@@ -101,9 +121,17 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
             await schema_files.loadFileSchemas(relative_path, await modules[file]);
         }
 
+        //REMOVEME
         onFile?.({
             relativePath: relative_path,
             reason: type,
+        });
+
+        plugins.invokeConcurrent("onFile", {
+            file,
+            relativePath: relative_path,
+            config: resolved_config,
+            update: type,
         });
     }
 
@@ -169,14 +197,7 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
         watchParams.watcher.on("unlink", watchFiles("remove"));
     }
 
-    return {
-        ...schema_files,
-        ajvInstances,
-        build,
-        watch,
-        isSchemaFile,
-        config: resolved_config,
-    };
+    return builder;
 }
 
 function resolveConfig(options: SchemaBuilderOptions) {
