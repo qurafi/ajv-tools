@@ -73,9 +73,7 @@ export default createUnplugin((config: PluginOptions) => {
                     }
                 }
 
-                if (module) {
-                    await Promise.all(modules_to_reload);
-                }
+                await Promise.all(modules_to_reload);
 
                 //TODO reload by id
             },
@@ -151,15 +149,16 @@ export default createUnplugin((config: PluginOptions) => {
                     // console.log({ raw_schema });
                     if (raw_schema) {
                         debug("raw schema");
-                        const code = schema_builder.getFileJsonSchemasCode(
+                        const schemas = schema_builder.getFileJsonSchemas(
                             schema_path,
                             instance == "server"
                         );
-                        if (!code) {
+                        if (!schemas) {
                             throw new Error(
                                 `Could not find schema for file ${schema_path}`
                             );
                         }
+                        const code = `export default ${JSON.stringify(schemas)}`;
                         return code;
                     }
                     const code = schema_builder.getSchemaFileCode("server", schema_path);

@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterAll, describe, expect, it } from "vitest";
 import { setupVite } from "./helpers";
 import puppeteer from "puppeteer";
 
@@ -100,7 +100,7 @@ describe("importing schemas", async () => {
 
         console.log(await page.content());
         expect(json).toBeDefined();
-        expect((json?.length ?? 0) > 3).toBe(!invalid);
+        expect((json?.trim().length ?? 0) > 2).toBe(!invalid);
         if (!invalid) {
             const schema = JSON.parse(json!);
             console.log(schema);
@@ -111,11 +111,11 @@ describe("importing schemas", async () => {
         }
     }
 
-    it.only("importing raw json schema shuold not have $$meta props", async () => {
+    it("importing raw json schema shuold not have $$meta props", async () => {
         await testClientBuilds(false);
     });
 
-    it.only("importing raw json schema with instance=server should throw error in client side", async () => {
+    it("importing raw json schema with instance=server should throw error in client side", async () => {
         await testClientBuilds(true);
     });
 
@@ -129,5 +129,9 @@ describe("importing schemas", async () => {
     // invalid
     it("throw error when not specifying ?t= ", async () => {
         expect(server.ssrLoadModule("$schemas?t")).rejects.toThrow();
+    });
+
+    afterAll(async () => {
+        await server.close();
     });
 });
