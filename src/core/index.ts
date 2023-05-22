@@ -30,7 +30,7 @@ export interface SchemaBuilderOptions {
     include: string | string[];
     exclude?: string | string[];
 
-    ajvOptions: {
+    ajvOptions?: {
         all?: AjvOptions;
         server?: AjvOptions;
         client?: AjvOptions;
