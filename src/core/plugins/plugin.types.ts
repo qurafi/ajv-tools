@@ -1,4 +1,4 @@
-import { ResolvedConfig, SchemaBuilder } from "../../index.js";
+import { ResolvedConfig, SchemaBuilder, UpdateType } from "../../index.js";
 
 export interface SchemaBuilderHooks {
     /** after resolving config and everything is ready */
@@ -7,11 +7,12 @@ export interface SchemaBuilderHooks {
     /** When file change handled */
     onFile(context: {
         config: ResolvedConfig;
-        //TODO make it as shared type
-        update: "change" | "remove" | "add";
+
+        update: UpdateType;
 
         file: string;
         relativePath: string;
+
         /** affected schemas <export name, schema> */
         //TODO
         // schemas: Record<string, any>;

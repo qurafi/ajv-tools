@@ -47,7 +47,7 @@ export interface SchemaBuilderOptions {
     plugins?: Plugin[];
 }
 
-type UpdateType = "change" | "remove" | "add";
+export type UpdateType = "change" | "remove" | "add";
 
 export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
     const resolved_config = resolveConfig(opts);
