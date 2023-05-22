@@ -1,14 +1,15 @@
-//TODO take security into considerations.
-type MapImport = (ref: string) => string;
+// type MapImport = (ref: string) => string;
+
+const json = JSON.stringify;
 
 export function generateDynamicImportsCode(
     refs: string[],
-    map: MapImport,
+    map = (ref: string) => ref,
     export_name?: string
 ) {
-    const named_import = export_name ? `.then(v=>v[${JSON.stringify(export_name)}])` : "";
+    const named_import = export_name ? `.then(v=>v[${json(export_name)}])` : "";
     const refsKeys = refs.map((ref) => {
-        return `"${ref}":() => import("${map(ref)}")${named_import}`;
+        return `${json(ref)}:() => import(${json(map(ref))})${named_import}`;
     });
     return `export default {${refsKeys.join(",")}}`;
 }

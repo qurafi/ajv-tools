@@ -7,3 +7,13 @@ test("generate code for list of dynamic import with mapping", async () => {
     const code = generateDynamicImportsCode(test_refs, (v) => `someprefix/${v}`);
     expect(code).toMatchSnapshot();
 });
+
+test("generate import code with named export", () => {
+    const code = generateDynamicImportsCode(test_refs, undefined, "default");
+    expect(code).toMatchSnapshot();
+});
+
+test("generate safe code", async () => {
+    const code = generateDynamicImportsCode(['"hello']);
+    expect(code).toMatchSnapshot();
+});

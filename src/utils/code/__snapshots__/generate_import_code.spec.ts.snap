@@ -1,3 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`generate code for list of dynamic import with mapping 1`] = `"export default {\\"test\\":() => import(\\"someprefix/test\\"),\\"test2\\":() => import(\\"someprefix/test2\\")}"`;
+
+exports[`generate import code with named export 1`] = `"export default {\\"test\\":() => import(\\"test\\").then(v=>v[\\"default\\"]),\\"test2\\":() => import(\\"test2\\").then(v=>v[\\"default\\"])}"`;
+
+exports[`generate safe code 1`] = `"export default {\\"\\\\\\"hello\\":() => import(\\"\\\\\\"hello\\")}"`;
