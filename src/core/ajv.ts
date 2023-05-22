@@ -242,7 +242,7 @@ export const enforcedAjvOptions: AjvOptions = {
         esm: true,
         source: true,
         optimize: 2,
-        lines: true,
+        lines: true, // REMOVEME for dev mode only
     },
 
     logger: {

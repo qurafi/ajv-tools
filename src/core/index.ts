@@ -30,8 +30,11 @@ export interface SchemaBuilderOptions {
     include: string | string[];
     exclude?: string | string[];
 
-    ajvOptions?: AjvOptions;
-    clientAjvOptions?: AjvOptions | false;
+    ajvOptions: {
+        all?: AjvOptions;
+        server?: AjvOptions;
+        client?: AjvOptions;
+    };
 
     moduleLoader?: ModuleLoader;
 
@@ -48,17 +51,10 @@ type UpdateType = "change" | "remove" | "add";
 
 export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
     const resolved_config = resolveConfig(opts);
+    debug("config resolved", resolved_config);
 
-    const {
-        root,
-        exclude,
-        include,
-        baseDir,
-        ajvOptions,
-        clientAjvOptions,
-        resolveModule,
-        resolveSchema,
-    } = resolved_config;
+    const { root, exclude, include, baseDir, ajvOptions, resolveModule, resolveSchema } =
+        resolved_config;
 
     const root_base = path.resolve(root, baseDir || "");
     const module_loader = opts.moduleLoader ?? defaultModuleLoader;
@@ -66,8 +62,8 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
     const plugins = await createPluginContainer(opts.plugins);
 
     const ajvInstances = {
-        server: new Ajv(ajvOptions),
-        client: new Ajv(clientAjvOptions),
+        server: new Ajv(ajvOptions.server),
+        client: new Ajv(ajvOptions.client),
     };
 
     initInstances(ajvInstances);
@@ -89,8 +85,6 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
     };
 
     plugins.invokeConcurrent("init", { config: resolved_config, builder });
-
-    debug("config resolved", resolved_config);
 
     async function handleFileUpdate(type: UpdateType, _file: string) {
         const file = path.resolve(root_base, _file);
@@ -200,16 +194,19 @@ function resolveConfig(options: SchemaBuilderOptions) {
         root,
 
         ajvOptions: {
-            ...options.ajvOptions,
-            ...enforcedAjvOptions,
-            ...ajvOptionsServer,
-        } as AjvOptions,
-
-        clientAjvOptions: {
-            ...options.ajvOptions,
-            ...enforcedAjvOptions,
-            ...ajvOptionsClient,
-        } as AjvOptions,
+            server: {
+                ...ajvOptionsServer,
+                ...options.ajvOptions?.all,
+                ...options.ajvOptions?.server,
+                ...enforcedAjvOptions,
+            },
+            client: {
+                ...ajvOptionsClient,
+                ...options.ajvOptions?.all,
+                ...options.ajvOptions?.client,
+                ...enforcedAjvOptions,
+            },
+        },
 
         include: resolvePatterns(ensureArray(options.include), root),
         exclude: resolvePatterns(ensureArray(options.exclude ?? []), root),
