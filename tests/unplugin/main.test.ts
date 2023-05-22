@@ -68,17 +68,17 @@ describe("importing schemas", async () => {
         testServerJSONSchema(module);
     });
 
-    it("should import raw schema when adding ?raw&instance=server query by file", async () => {
+    it("should import raw schema when adding ?raw&server query by file", async () => {
         const module = await server.ssrLoadModule(
-            "$schemas/schemas/default_export?raw&instance=server"
+            "$schemas/schemas/default_export?raw&server"
         );
 
         testServerJSONSchema(module);
     });
 
-    it("should import raw schema when adding ?raw&instance=client query by file", async () => {
+    it("should import raw schema when adding ?raw&client query by file", async () => {
         const module = await server.ssrLoadModule(
-            "$schemas/schemas/default_export?raw&instance=client"
+            "$schemas/schemas/default_export?raw&client"
         );
         const schemas = module.default;
         expect(schemas).toEqual({

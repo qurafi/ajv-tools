@@ -41,8 +41,6 @@ export interface SchemaBuilderOptions {
 
     resolveSchema?: AjvFilesStoreOptions["resolveSchema"];
 
-    onFile?(params: { relativePath: string; reason: UpdateType }): any;
-
     plugins?: Plugin[];
 }
 
@@ -58,7 +56,6 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
         baseDir,
         ajvOptions,
         clientAjvOptions,
-        onFile,
         resolveModule,
         resolveSchema,
     } = resolved_config;
@@ -87,6 +84,7 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
         build,
         watch,
         isSchemaFile,
+        handleFileUpdate,
         config: resolved_config,
     };
 
@@ -114,18 +112,11 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
             });
 
             if (!modules[file]) {
-                //TODO throw error
-                return;
+                throw new Error(`Could not load schema file: ${file}`);
             }
 
             await schema_files.loadFileSchemas(relative_path, await modules[file]);
         }
-
-        //REMOVEME
-        onFile?.({
-            relativePath: relative_path,
-            reason: type,
-        });
 
         plugins.invokeConcurrent("onFile", {
             file,

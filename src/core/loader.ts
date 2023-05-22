@@ -8,7 +8,6 @@ import { createDebug } from "../utils/index.js";
 const debug = createDebug("core:loader");
 
 /** to bundle schema source files */
-//TODO make it user configurable?
 export const cache_path = "node_modules/.vite-plugin-ajv-cache";
 
 export interface ModuleLoaderContext {
@@ -73,7 +72,6 @@ loader.build = async function (
         outdir: cache_path,
         outbase: ".",
         absWorkingDir: config.root,
-        //TODO support cjs?
         format: "esm",
         platform: "node",
         bundle: true,

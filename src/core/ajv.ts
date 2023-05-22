@@ -89,7 +89,7 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
 
         removeFileSchemas(file);
 
-        const file_schemas = new Map();
+        const file_schemas = new Map<string, any>();
 
         files.set(removeSchemaFileExt(file), file_schemas);
 
@@ -120,6 +120,8 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
             addSchema(schema_clone, ref);
             file_schemas.set(export_name, schema);
         }
+
+        return [...file_schemas.entries()];
     }
 
     /** Generate validation code for all schemas in a file */
@@ -155,7 +157,7 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
     }
 
     /** Generate code represent all defined schema in a file */
-    function getFileJsonSchemasCode(
+    function getFileJsonSchemas(
         file: string,
         /** server=true, return a json schema with extra information($$meta)
          *
@@ -178,8 +180,7 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
             return [ref, ajv_schema];
         });
 
-        //TODO make it as named exports for treeshaking? or atleast as an option
-        return `export default ${JSON.stringify(Object.fromEntries(schemas))}`;
+        return Object.fromEntries(schemas);
     }
 
     function ensureInstance(instance: string) {
@@ -199,7 +200,7 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
     return {
         instances,
         files,
-        getFileJsonSchemasCode,
+        getFileJsonSchemas,
         getSchemaFileCode,
         getSchemaCode,
         getFileSchemas,
@@ -226,7 +227,7 @@ export function initInstances(instances: Record<string, Ajv>) {
             "json-pointer",
             "relative-json-pointer",
             "regex",
-            /** not actual format but a hint for the ui */
+            /** not actual format but a hint for the UI */
             "password",
         ]);
     }

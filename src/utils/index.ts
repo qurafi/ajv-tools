@@ -19,7 +19,6 @@ export function ensureArray<T>(x: T | T[]) {
     return Array.isArray(x) ? x : [x];
 }
 
-//TODO add json support
 export function removeSchemaFileExt(file: string) {
     return file.replace(/\.(j|t)s$/, "");
 }

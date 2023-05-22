@@ -8,6 +8,7 @@ import {
 import { generateDynamicImportsCode } from "../utils/code/generate_import_code.js";
 import { createDebug, parseQueries, removeSchemaFileExt } from "../utils/index.js";
 import { resolveSchemaRef } from "../core/ajv.js";
+import builderHmrVitePlugin from "./vite_hmr.js";
 
 const IMPORT_PREFIX = "$schemas";
 
@@ -47,36 +48,7 @@ export default createUnplugin((config: PluginOptions) => {
                 }
                 return defaultModuleLoader(context);
             },
-            onFile: async ({ relativePath }) => {
-                if (!vite_server) {
-                    return;
-                }
-
-                const file = removeSchemaFileExt(relativePath);
-
-                // const module = vite_server.moduleGraph.getModuleById(
-                //     `\0$schemas/${file}`
-                // );
-
-                // so we could support ?queries params
-                const file_prefix = `\0$schemas/${file}`;
-
-                const modules_to_reload: Promise<void>[] = [];
-
-                for (const id of vite_server.moduleGraph.idToModuleMap.keys()) {
-                    if (id.startsWith(file_prefix)) {
-                        console.log(id);
-                        const module = vite_server.moduleGraph.getModuleById(id);
-                        if (module) {
-                            modules_to_reload.push(vite_server.reloadModule(module));
-                        }
-                    }
-                }
-
-                await Promise.all(modules_to_reload);
-
-                //TODO reload by id
-            },
+            plugins: [builderHmrVitePlugin(vite_server)],
         });
 
         build_promise = schema_builder.build();
@@ -110,9 +82,7 @@ export default createUnplugin((config: PluginOptions) => {
 
                 const { queries, str: id } = parseQueries(raw_id);
                 const schema_ref = id.slice(resolved_prefix.length);
-                //TODO make default instance user configurable
-                const instance_q = queries.get("instance");
-                const instance = instance_q ?? "server";
+                const instance = queries.has("server") ? "server" : "client";
 
                 debug_load("loading", id, queries, schema_ref, instance, "\n");
 
@@ -161,7 +131,7 @@ export default createUnplugin((config: PluginOptions) => {
                         const code = `export default ${JSON.stringify(schemas)}`;
                         return code;
                     }
-                    const code = schema_builder.getSchemaFileCode("server", schema_path);
+                    const code = schema_builder.getSchemaFileCode(instance, schema_path);
                     //TODO move error to original function
                     if (!code) {
                         throw new Error(`Could not find schema for file ${schema_path}`);
@@ -175,8 +145,8 @@ export default createUnplugin((config: PluginOptions) => {
                     if (!id) {
                         throw new Error("Schema id is not provided");
                     }
-                    //TODO allow to customize instance and detect client builds with vite
-                    return schema_builder.getSchemaCode(id, "server");
+
+                    return schema_builder.getSchemaCode(id, instance);
                 }
 
                 throw new Error(`Could not resovle schema import ${raw_id}`);
@@ -196,12 +166,23 @@ export default createUnplugin((config: PluginOptions) => {
                 if (raw_id != null) {
                     const instance = ssr ? "server" : "client";
                     const { queries, str: id } = parseQueries(raw_id);
-                    const user_instance = queries.get("instance");
-                    if (user_instance == "server" && !ssr) {
-                        throw new Error("Using a server instance inside a client build");
-                    } else if (!user_instance) {
-                        queries.set("instance", instance);
+                    const has_server = queries.has("server");
+                    const has_client = queries.has("client");
+
+                    if (has_client && has_server) {
+                        throw new Error("Cannot have both server & client query");
                     }
+
+                    if (has_server && !ssr) {
+                        throw new Error("Using a server instance inside a client build");
+                    }
+
+                    if (!has_client && !has_server) {
+                        queries.set(instance, "");
+                    }
+
+                    console.log({ q: id + queries.toString() });
+
                     return `${id}?${queries.toString()}`;
                 }
             },

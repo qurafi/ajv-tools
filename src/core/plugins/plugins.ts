@@ -81,7 +81,6 @@ export async function createPluginContainer<PluginDefs>(
 
         invoke,
 
-        //TODO rename this thing?
         async getHookResult<A extends keyof T>(action: A, ...params: HookParams<T, A>) {
             const [result] = await invoke(
                 {
