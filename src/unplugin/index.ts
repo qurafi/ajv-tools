@@ -181,8 +181,6 @@ export default createUnplugin((config: PluginOptions) => {
                         queries.set(instance, "");
                     }
 
-                    console.log({ q: id + queries.toString() });
-
                     return `${id}?${queries.toString()}`;
                 }
             },
