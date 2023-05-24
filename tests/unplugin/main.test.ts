@@ -3,7 +3,38 @@ import { setupVite } from "./helpers";
 import puppeteer from "puppeteer";
 
 describe("importing schemas", async () => {
-    const { server } = await setupVite({ fixture: "vite-simple-app" });
+    const global_schemas = [
+        {
+            $id: "http://api.example.com/Message",
+            type: "object",
+            properties: {
+                content: { type: "string" },
+                created_at: { type: "number" },
+                user: { $ref: "http://api.example.com/User" },
+            },
+        },
+        {
+            $id: "http://api.example.com/User",
+            type: "object",
+            properties: {
+                id: { type: "number" },
+                created_at: { type: "number" },
+                full_name: { type: "string" },
+                username: { type: "string" },
+            },
+        },
+    ];
+
+    const { server } = await setupVite({
+        fixture: "vite-simple-app",
+        pluginOptions: {
+            ajvOptions: {
+                all: {
+                    schemas: [global_schemas],
+                },
+            },
+        },
+    });
 
     await server.listen(5174);
 
@@ -129,6 +160,17 @@ describe("importing schemas", async () => {
     // invalid
     it("throw error when not specifying ?t= ", async () => {
         expect(server.ssrLoadModule("$schemas?t")).rejects.toThrow();
+    });
+
+    it("?code query for raw compiled schema", async () => {
+        const module = await server.ssrLoadModule("$schemas/schemas/user?code");
+        expect(module.default).toBeTypeOf("string");
+    });
+
+    it("raw code query should propagate when using ?t=all", async () => {
+        const module = await server.ssrLoadModule("$schemas?t=all&code");
+        const code = await module.default["schemas/user"]();
+        expect(code).toBeTypeOf("string");
     });
 
     afterAll(async () => {
