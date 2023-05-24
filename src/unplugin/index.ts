@@ -62,11 +62,16 @@ export default createUnplugin((config: PluginOptions) => {
         return null;
     }
 
+    function raw_code_if(s: string, b: boolean) {
+        return b ? `export default ${JSON.stringify(s)}` : s;
+    }
+
     return {
         name: "unplugin-ajv-tools",
 
         async buildStart() {
             debug("build start");
+
             await initSchemaBuilder();
 
             if (vite_server) {
@@ -77,80 +82,82 @@ export default createUnplugin((config: PluginOptions) => {
         resolveId,
 
         async load(raw_id) {
-            if (raw_id.startsWith(resolved_prefix)) {
-                await build_promise;
+            if (!raw_id.startsWith(resolved_prefix)) {
+                return;
+            }
 
-                const { queries, str: id } = parseQueries(raw_id);
-                const schema_ref = id.slice(resolved_prefix.length);
-                const instance = queries.has("server") ? "server" : "client";
+            await build_promise;
 
-                debug_load("loading", id, queries, schema_ref, instance, "\n");
+            const { queries, str: id } = parseQueries(raw_id);
+            const schema_ref = id.slice(resolved_prefix.length);
+            const instance = queries.has("server") ? "server" : "client";
 
-                if (id == resolved_prefix && queries.get("t")) {
-                    const t = queries.get("t");
+            //TODO we need to think of a way to produce the raw code as transformed by vite
+            const raw_code = queries.has("code");
 
-                    switch (t) {
-                        case "all": {
-                            const { files } = schema_builder;
-                            const code = generateDynamicImportsCode(
-                                [...files.keys()],
-                                (file) => `$schemas/${file}`
-                            );
-                            debug({ code });
-                            return code;
-                        }
-                        // case "ids":
-                        //TODO
-                        // case "routes":
-                        //     // all schema with defined in config.routes
-                        default:
-                            throw new Error(`${t} unkown option for t param`);
-                    }
+            debug_load("loading", id, queries, schema_ref, instance, "\n");
+
+            if (id == resolved_prefix && queries.get("t")) {
+                const t = queries.get("t");
+                const propagate_queries = `?${instance}${raw_code ? "&code" : ""}`;
+
+                if (t == "all") {
+                    const files = [...schema_builder.files.keys()];
+                    const code = generateDynamicImportsCode(
+                        files,
+                        (file) => `$schemas/${file}${propagate_queries}`,
+                        raw_code ? "default" : undefined
+                    );
+
+                    debug({ code });
+                    return code;
+                } else {
+                    throw new Error(`${t} unkown option for t param`);
+                }
+            }
+
+            // schema by path
+            if (schema_ref.startsWith("/")) {
+                const raw_schema = queries.has("raw");
+                const schema_path = removeSchemaFileExt(schema_ref.slice(1));
+                if (!schema_path) {
+                    throw new Error("Schema path must be supplied");
                 }
 
-                // schema by path
-                if (schema_ref.startsWith("/")) {
-                    const raw_schema = queries.has("raw");
-                    const schema_path = removeSchemaFileExt(schema_ref.slice(1));
-                    if (!schema_path) {
-                        throw new Error("Schema path must be supplied");
-                    }
-
-                    // console.log({ raw_schema });
-                    if (raw_schema) {
-                        debug("raw schema");
-                        const schemas = schema_builder.getFileJsonSchemas(
-                            schema_path,
-                            instance == "server"
-                        );
-                        if (!schemas) {
-                            throw new Error(
-                                `Could not find schema for file ${schema_path}`
-                            );
-                        }
-                        const code = `export default ${JSON.stringify(schemas)}`;
-                        return code;
-                    }
-                    const code = schema_builder.getSchemaFileCode(instance, schema_path);
-                    //TODO move error to original function
-                    if (!code) {
+                if (raw_schema) {
+                    debug("raw schema");
+                    const schemas = schema_builder.getFileJsonSchemas(
+                        schema_path,
+                        instance == "server"
+                    );
+                    if (!schemas) {
                         throw new Error(`Could not find schema for file ${schema_path}`);
                     }
+                    const code = `export default ${JSON.stringify(schemas)}`;
                     return code;
                 }
 
-                // schema by id
-                if (schema_ref.startsWith(":")) {
-                    const id = schema_ref.slice(1);
-                    if (!id) {
-                        throw new Error("Schema id is not provided");
-                    }
-
-                    return schema_builder.getSchemaCode(id, instance);
+                const code = schema_builder.getSchemaFileCode(instance, schema_path);
+                //TODO move error to original function
+                if (!code) {
+                    throw new Error(`Could not find schema for file ${schema_path}`);
                 }
 
-                throw new Error(`Could not resovle schema import ${raw_id}`);
+                return raw_code_if(code, raw_code);
             }
+
+            // schema by id
+            if (schema_ref.startsWith(":")) {
+                const id = schema_ref.slice(1);
+                if (!id) {
+                    throw new Error("Schema id is not provided");
+                }
+
+                const code = schema_builder.getSchemaCode(id, instance);
+                return raw_code_if(code, raw_code);
+            }
+
+            throw new Error(`Could not resovle schema import ${raw_id}`);
         },
 
         vite: {
