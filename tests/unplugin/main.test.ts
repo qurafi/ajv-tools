@@ -86,6 +86,8 @@ describe("importing schemas", async () => {
         validateDefaultExport(module);
     });
 
+    // ?raw query
+
     async function testServerJSONSchema(mod: any) {
         const original = {
             ...(await import("../fixtures/vite-simple-app/src/schemas/default_export")),
@@ -134,7 +136,6 @@ describe("importing schemas", async () => {
         expect((json?.trim().length ?? 0) > 2).toBe(!invalid);
         if (!invalid) {
             const schema = JSON.parse(json!);
-            console.log(schema);
             expect(schema).toEqual({
                 default: { type: "string" },
                 named: { type: "number" },
@@ -150,6 +151,8 @@ describe("importing schemas", async () => {
         await testClientBuilds(true);
     });
 
+    // ?t=all
+
     it("should import all schemas files", async () => {
         const module = await server.ssrLoadModule("$schemas?t=all");
         const default_export = await module.default?.["schemas/default_export"]?.();
@@ -162,6 +165,8 @@ describe("importing schemas", async () => {
         expect(server.ssrLoadModule("$schemas?t")).rejects.toThrow();
     });
 
+    // ?code for raw code
+
     it("?code query for raw compiled schema", async () => {
         const module = await server.ssrLoadModule("$schemas/schemas/user?code");
         expect(module.default).toBeTypeOf("string");
@@ -171,6 +176,15 @@ describe("importing schemas", async () => {
         const module = await server.ssrLoadModule("$schemas?t=all&code");
         const code = await module.default["schemas/user"]();
         expect(code).toBeTypeOf("string");
+    });
+
+    // external schemas
+
+    it("should allow referencing external schemas added by schemas options", async () => {
+        const m = "$schemas/schemas/ref_external";
+
+        await expect(server.ssrLoadModule(m)).resolves.toBeDefined();
+        await expect(server.ssrLoadModule(m + "?client")).resolves.toBeDefined();
     });
 
     afterAll(async () => {
