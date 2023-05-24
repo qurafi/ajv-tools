@@ -6,7 +6,7 @@ import { readFile, writeFile } from "fs/promises";
 import { setTimeout } from "timers/promises";
 
 export async function setupVite(opts: {
-    pluginOptions?: PluginOptions;
+    pluginOptions?: Omit<PluginOptions, "include">;
     viteOptions?: InlineConfig;
     fixture: string;
 }) {
