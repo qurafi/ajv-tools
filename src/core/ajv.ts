@@ -1,12 +1,14 @@
 import Ajv from "ajv";
 import generateAjvStandaloneCode from "ajv/dist/standalone/index.js";
-import { red, yellow } from "kleur/colors";
+import { bold, red, yellow } from "kleur/colors";
 import { createDebug, removeSchemaFileExt } from "../utils/index.js";
 import type { Options as AjvOptions } from "ajv";
 import rfdc from "rfdc";
 import addFormats from "ajv-formats";
+import addAjvErrors from "ajv-errors";
 import { AjvCompileOptions, schema_opts } from "./ajv_options.js";
 import { transformCJS } from "../utils/code/cjs_to_esm.js";
+import { isSchemaSecure, warnAboutInsecure } from "./is_schema_secure.js";
 
 const clone = rfdc();
 
@@ -113,6 +115,23 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
             const meta = schema_clone[meta_prop];
             if (meta?.options) {
                 schema_opts.set(schema_clone, meta.options);
+            }
+
+            if (!isSchemaSecure(schema_clone)) {
+                warnAboutInsecure(file, export_name);
+
+                const opts = schema_opts.get(schema_clone) || {};
+                opts.allErrors = false;
+                schema_opts.set(schema_clone, opts);
+
+                JSON.stringify(schema_clone, (key, v) => {
+                    if (key == "errorMessage") {
+                        throw new Error(
+                            `${file}: custom error messages are not supported when the schema is not secure because allErrors option has to be disabled on insecure schemas`
+                        );
+                    }
+                    return v;
+                });
             }
 
             delete schema_clone[meta_prop];
@@ -227,15 +246,24 @@ export function initInstances(instances: Record<string, Ajv>) {
             "json-pointer",
             "relative-json-pointer",
             "regex",
-            /** not actual format but a hint for the UI */
+            // not actual format but a hint for the UI
             "password",
         ]);
+
+        addAjvErrors(instance);
     }
 }
 
 export function resolveSchemaRef(file: string, ref: string) {
     return `file://${removeSchemaFileExt(file)}#${ref}`;
 }
+
+export const logger = {
+    // currently error is not used because strict=true
+    error: (...args: any[]) => console.error(red("ajv error"), ...args),
+    warn: (...args: any[]) => console.log(bold(yellow("ajv warning ")), ...args),
+    log: console.log,
+};
 
 export const enforcedAjvOptions: AjvOptions = {
     code: {
@@ -245,17 +273,12 @@ export const enforcedAjvOptions: AjvOptions = {
         lines: true, // REMOVEME for dev mode only
     },
 
-    logger: {
-        // currently error is not used because strict=true
-        error: (...args: any[]) => console.error(red("ajv error: "), ...args),
-        warn: (...args: any[]) => console.log(yellow("ajv warning: "), ...args),
-        log: console.log,
-    },
+    logger: logger,
 };
 
 /** server options optmized for speed */
 export const ajvOptionsServer: AjvOptions = {
-    allErrors: false,
+    allErrors: true,
     removeAdditional: true,
     useDefaults: true,
     coerceTypes: true,
@@ -263,8 +286,8 @@ export const ajvOptionsServer: AjvOptions = {
 
 /** optmized for size */
 export const ajvOptionsClient: AjvOptions = {
-    inlineRefs: false,
     allErrors: true,
+    inlineRefs: false,
     useDefaults: false,
     coerceTypes: false,
     loopRequired: 4,

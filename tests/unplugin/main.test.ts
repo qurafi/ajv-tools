@@ -1,6 +1,7 @@
 import { afterAll, describe, expect, it } from "vitest";
 import { setupVite } from "./helpers";
 import puppeteer from "puppeteer";
+import { ErrorObject } from "ajv";
 
 describe("importing schemas", async () => {
     const global_schemas = [
@@ -185,6 +186,32 @@ describe("importing schemas", async () => {
 
         await expect(server.ssrLoadModule(m)).resolves.toBeDefined();
         await expect(server.ssrLoadModule(m + "?client")).resolves.toBeDefined();
+    });
+
+    it("should disable allErrors when the schema is not secure", async () => {
+        const m = await server.ssrLoadModule("$schemas/schemas/insecure");
+        // const code = await server.ssrLoadModule("$schemas/schemas/insecure?code");
+        m.test({});
+        expect(m.test.errors?.length).toBe(1);
+    });
+
+    it("should accept custom error messages", async () => {
+        const m = await server.ssrLoadModule("$schemas/schemas/custom_error");
+        const valid = m.default({ foo: 1, bar: "a" });
+        const expected_errors = {
+            foo: "data.foo should be integer >= 2",
+            bar: "data.bar should be string with length >= 2",
+        };
+
+        const errors = m.default.errors as Array<ErrorObject>;
+        expect(valid).toBe(false);
+        expect(errors).toHaveLength(2);
+
+        const expected = errors.filter((err) => {
+            const prop = err.instancePath.slice(1);
+            return (expected_errors as any)[prop] == err.message;
+        });
+        expect(expected).toHaveLength(2);
     });
 
     afterAll(async () => {
