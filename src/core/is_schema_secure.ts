@@ -1,7 +1,9 @@
 import Ajv from "ajv";
-import secureMetaSchema from "ajv/lib/refs/json-schema-secure.json";
+import { createRequire } from "module";
 import { logger } from "./ajv";
 import { blue, bold, red } from "kleur/colors";
+
+const secureMetaSchema = createRequire(__dirname)("ajv/lib/refs/json-schema-secure.json");
 
 // to prevent ReDos attack we will validate all schemas using this meta-schema
 // any insecure schemas will have allErrors disabled
