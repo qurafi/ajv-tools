@@ -1,6 +1,5 @@
 import { afterAll, beforeEach, describe, expect, it } from "vitest";
 import { editFile, poll, setupVite } from "./helpers";
-import { HmrContext } from "vite";
 import path from "path";
 import fse from "fs-extra";
 
@@ -53,9 +52,7 @@ describe("vite hot reloading schemas", async () => {
             await poll(30, 5000, async () => {
                 const m = await server.ssrLoadModule("./src/importer");
                 const changed = m.schemas.named_changed;
-                if (changed) {
-                    return true;
-                }
+                return changed !== undefined;
             });
 
             await test_importer(true);
