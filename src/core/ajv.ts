@@ -287,9 +287,10 @@ export const ajvOptionsServer: AjvOptions = {
 /** optmized for size */
 export const ajvOptionsClient: AjvOptions = {
     allErrors: true,
+    removeAdditional: true,
+    useDefaults: true,
+    coerceTypes: true,
     inlineRefs: false,
-    useDefaults: false,
-    coerceTypes: false,
     loopRequired: 4,
     loopEnum: 4,
 };
