@@ -34,8 +34,12 @@ export default createUnplugin((config: PluginOptions) => {
     const resolved_prefix = "\0" + IMPORT_PREFIX;
 
     async function initSchemaBuilder() {
+        const plugins = config.plugins ?? [];
+        plugins.push(builderHmrVitePlugin(vite_server));
+
         schema_builder = await createSchemaBuilder({
             ...config,
+            plugins,
             useDirectImport: true,
             moduleLoader(context) {
                 const { files, defaultModuleLoader } = context;
@@ -48,7 +52,6 @@ export default createUnplugin((config: PluginOptions) => {
                 }
                 return defaultModuleLoader(context);
             },
-            plugins: [builderHmrVitePlugin(vite_server)],
         });
 
         build_promise = schema_builder.build();
