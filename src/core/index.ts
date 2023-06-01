@@ -19,6 +19,7 @@ import { Plugin } from "./plugins/plugin.types";
 import { createPluginContainer } from "./plugins/plugins.js";
 
 const debug = createDebug("core");
+const debug_build = createDebug("build");
 
 export { Plugin };
 
@@ -86,11 +87,10 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
 
     plugins.invokeConcurrent("init", { config: resolved_config, builder });
 
-    async function handleFileUpdate(type: UpdateType, _file: string) {
+    async function handleFileUpdate(type: UpdateType, _file: string, initial = false) {
         const file = path.resolve(root_base, _file);
-
         const relative_path = path.relative(root_base, file);
-        debug(`${type}: ${relative_path}`);
+        debug_build(`${type}: ${relative_path}`);
 
         if (!isSchemaFile(file)) {
             return;
@@ -117,6 +117,7 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
             relativePath: relative_path,
             config: resolved_config,
             update: type,
+            initial,
         });
     }
 
@@ -134,20 +135,22 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
             ignore: exclude,
         });
 
-        debug("building: ", files);
-
-        const promises = files.map((file) => {
-            return handleFileUpdate("add", file);
-        });
+        debug_build("building: ", files);
 
         const start = performance.now();
 
+        const promises = files.map((file) => {
+            return handleFileUpdate("add", file, true);
+        });
+
         await Promise.all(promises);
 
-        debug("build all files in %d", performance.now() - start);
+        await plugins.invokeConcurrent("buildEnd");
+
+        debug_build("build all files in %d", performance.now() - start);
 
         if (outDir) {
-            debug("writing to %s", outDir);
+            debug_build("writing to %s", outDir);
             return { files, out: writeFiles(files, outDir) };
         }
 

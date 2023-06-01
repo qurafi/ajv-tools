@@ -13,9 +13,14 @@ export interface SchemaBuilderHooks {
         file: string;
         relativePath: string;
 
+        initial: boolean;
+
         /** affected schemas <export name, schema> */
         //TODO
         // schemas: Record<string, any>;
     }): void;
+
+    //
+    buildEnd(): void;
 }
 export type Plugin = Partial<SchemaBuilderHooks>;
