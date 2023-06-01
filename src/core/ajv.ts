@@ -1,7 +1,6 @@
 import Ajv from "ajv";
 import generateAjvStandaloneCode from "ajv/dist/standalone/index.js";
-import { bold, red, yellow } from "kleur/colors";
-import { createDebug, removeSchemaFileExt } from "../utils/index.js";
+import { createDebug, logger, removeSchemaFileExt } from "../utils/index.js";
 import type { Options as AjvOptions } from "ajv";
 import rfdc from "rfdc";
 import addFormats from "ajv-formats";
@@ -83,10 +82,11 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
 
     async function loadFileSchemas(file: string, module: Record<string, unknown>) {
         const schemas = await resolveModule(module, file);
+        debug("loadFileSchemas", schemas);
         const schemas_entries = Object.entries(schemas);
 
         if (schemas_entries.length === 0) {
-            console.log(yellow(`Warning: ${file}: does not export any schema`));
+            logger.warn(`${file}: does not export any schema`);
         }
 
         removeFileSchemas(file);
@@ -257,13 +257,6 @@ export function initInstances(instances: Record<string, Ajv>) {
 export function resolveSchemaRef(file: string, ref: string) {
     return `file://${removeSchemaFileExt(file)}#${ref}`;
 }
-
-export const logger = {
-    // currently error is not used because strict=true
-    error: (...args: any[]) => console.error(red("ajv error"), ...args),
-    warn: (...args: any[]) => console.log(bold(yellow("ajv warning ")), ...args),
-    log: console.log,
-};
 
 export const enforcedAjvOptions: AjvOptions = {
     code: {

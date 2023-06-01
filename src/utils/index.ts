@@ -1,4 +1,5 @@
 import createDebugger from "debug";
+import { bold, red, yellow } from "kleur/colors";
 import path from "node:path";
 
 export type MaybePromise<T> = Promise<T> | T;
@@ -39,3 +40,9 @@ export function parseQueries(str: string) {
         str: stripped,
     };
 }
+
+export const logger = {
+    error: (...args: any[]) => console.error(red("error:"), ...args),
+    warn: (...args: any[]) => console.error(bold(yellow("warn: ")), ...args),
+    log: console.log,
+};
