@@ -1,7 +1,8 @@
 import Ajv from "ajv";
-import { createRequire } from "module";
-import { logger } from "./ajv";
-import { blue, bold, red } from "kleur/colors";
+import { red } from "kleur/colors";
+import { createRequire } from "node:module";
+import { logger } from "../utils/index.js";
+import { schema_opts } from "./ajv_options.js";
 
 const secureMetaSchema = createRequire(__dirname)("ajv/lib/refs/json-schema-secure.json");
 
@@ -12,15 +13,44 @@ const secureMetaSchema = createRequire(__dirname)("ajv/lib/refs/json-schema-secu
 const ajv = new Ajv({ strictTypes: false, allErrors: true });
 export const isSchemaSecure = ajv.compile(secureMetaSchema);
 
-export function warnAboutInsecure(file: string, export_name: string) {
-    const source = `${bold(file)}:${blue(export_name)}`;
-    const context = Ajv.prototype.errorsText.call(null, isSchemaSecure.errors);
+let secure_warn_context: Record<string, any> = {};
 
-    logger.log("");
-    logger.warn(`${source} ${red("is not secure")}.`);
-    logger.log(bold("context:"), context);
-    logger.log(red("NOTE:"), "allErrors option will be disabled for this schema");
-    logger.log(
-        `See ${bold("https://ajv.js.org/security.html#redos-attack")} for more context.`
-    );
+export function warnAboutInsecure(file: string, export_name: string) {
+    secure_warn_context[file] = {
+        ...secure_warn_context[file],
+        [export_name]: ajv.errorsText(isSchemaSecure.errors),
+    };
+
+    Promise.resolve().then(() => {
+        if (!Object.keys(secure_warn_context).length) {
+            return;
+        }
+
+        logger.log(
+            red("\nSECURITY:"),
+            `Some of the exported schemas are not secure:`,
+            secure_warn_context
+        );
+
+        secure_warn_context = {};
+    });
+}
+
+export function checkForSchemaSecuriry(schema: any, file: string, export_name: string) {
+    if (!isSchemaSecure(schema)) {
+        warnAboutInsecure(file, export_name);
+
+        const opts = schema_opts.get(schema) || {};
+        opts.allErrors = false;
+        schema_opts.set(schema, opts);
+
+        JSON.stringify(schema, (key, v) => {
+            if (key == "errorMessage") {
+                throw new Error(
+                    `${file}: custom error messages are not supported when the schema is not secure because allErrors option has to be disabled on insecure schemas`
+                );
+            }
+            return v;
+        });
+    }
 }

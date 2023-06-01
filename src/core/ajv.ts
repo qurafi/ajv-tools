@@ -1,13 +1,13 @@
-import Ajv from "ajv";
-import generateAjvStandaloneCode from "ajv/dist/standalone/index.js";
-import { createDebug, logger, removeSchemaFileExt } from "../utils/index.js";
 import type { Options as AjvOptions } from "ajv";
-import rfdc from "rfdc";
-import addFormats from "ajv-formats";
+import Ajv from "ajv";
 import addAjvErrors from "ajv-errors";
-import { AjvCompileOptions, schema_opts } from "./ajv_options.js";
+import addFormats from "ajv-formats";
+import generateAjvStandaloneCode from "ajv/dist/standalone/index.js";
+import rfdc from "rfdc";
 import { transformCJS } from "../utils/code/cjs_to_esm.js";
-import { isSchemaSecure, warnAboutInsecure } from "./is_schema_secure.js";
+import { createDebug, logger, removeSchemaFileExt } from "../utils/index.js";
+import { AjvCompileOptions, schema_opts } from "./ajv_options.js";
+import { checkForSchemaSecuriry } from "./is_schema_secure.js";
 
 const clone = rfdc();
 
@@ -117,22 +117,7 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
                 schema_opts.set(schema_clone, meta.options);
             }
 
-            if (!isSchemaSecure(schema_clone)) {
-                warnAboutInsecure(file, export_name);
-
-                const opts = schema_opts.get(schema_clone) || {};
-                opts.allErrors = false;
-                schema_opts.set(schema_clone, opts);
-
-                JSON.stringify(schema_clone, (key, v) => {
-                    if (key == "errorMessage") {
-                        throw new Error(
-                            `${file}: custom error messages are not supported when the schema is not secure because allErrors option has to be disabled on insecure schemas`
-                        );
-                    }
-                    return v;
-                });
-            }
+            checkForSchemaSecuriry(schema_clone, file, export_name);
 
             delete schema_clone[meta_prop];
 
