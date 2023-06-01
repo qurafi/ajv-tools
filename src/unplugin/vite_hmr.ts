@@ -8,8 +8,8 @@ export default function builderHmrVitePlugin(server: ViteDevServer): Plugin {
         init(context) {
             schema_builder = context.builder;
         },
-        onFile: async ({ relativePath, file: absolutePath }) => {
-            if (!server) {
+        onFile: async ({ relativePath, file: absolutePath, initial }) => {
+            if (initial) {
                 return;
             }
 
