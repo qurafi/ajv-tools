@@ -129,7 +129,7 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
     }
 
     /** Generate validation code for all schemas in a file */
-    function getSchemaFileCode(instance: string, file: string) {
+    function getSchemaFileCode(instance: string, file: string, interop = false) {
         const ajv = ensureInstance(instance);
 
         const file_schemas = getFileSchemas(file);
@@ -145,11 +145,11 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
             .replace("export const default =", "export default")
             .replace('"use strict";', "");
 
-        return transformCJS(code);
+        return transformCJS(code, interop);
     }
 
     /** Generate a schema validation code */
-    function getSchemaCode(ref: string, instance: string) {
+    function getSchemaCode(ref: string, instance: string, interop = false) {
         const ajv = ensureInstance(instance);
         const schema = ajv.getSchema(ref);
         if (!schema) {
@@ -157,7 +157,7 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
         }
 
         const code = generateAjvStandaloneCode(ajv, schema);
-        return transformCJS(code);
+        return transformCJS(code, interop);
     }
 
     /** Generate code represent all defined schema in a file */

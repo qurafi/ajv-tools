@@ -7,7 +7,6 @@ import {
 } from "../core/index.js";
 import { generateDynamicImportsCode } from "../utils/code/generate_import_code.js";
 import { createDebug, parseQueries, removeSchemaFileExt } from "../utils/index.js";
-import { resolveSchemaRef } from "../core/ajv.js";
 import builderHmrVitePlugin from "./vite_hmr.js";
 
 const IMPORT_PREFIX = "$schemas";
@@ -27,6 +26,8 @@ export default createUnplugin((config: PluginOptions) => {
     debug("init", { config });
 
     let vite_server: ViteDevServer;
+
+    let vite_build_mode: boolean;
 
     let schema_builder: SchemaBuilder;
     let build_promise: Promise<any>;
@@ -95,6 +96,8 @@ export default createUnplugin((config: PluginOptions) => {
             const schema_ref = id.slice(resolved_prefix.length);
             const instance = queries.has("server") ? "server" : "client";
 
+            const interop = vite_build_mode && instance == "server";
+
             //TODO we need to think of a way to produce the raw code as transformed by vite
             const raw_code = queries.has("code");
 
@@ -140,7 +143,11 @@ export default createUnplugin((config: PluginOptions) => {
                     return code;
                 }
 
-                const code = schema_builder.getSchemaFileCode(instance, schema_path);
+                const code = schema_builder.getSchemaFileCode(
+                    instance,
+                    schema_path,
+                    interop
+                );
                 //TODO move error to original function
                 if (!code) {
                     throw new Error(`Could not find schema for file ${schema_path}`);
@@ -156,7 +163,7 @@ export default createUnplugin((config: PluginOptions) => {
                     throw new Error("Schema id is not provided");
                 }
 
-                const code = schema_builder.getSchemaCode(id, instance);
+                const code = schema_builder.getSchemaCode(id, instance, interop);
                 return raw_code_if(code, raw_code);
             }
 
@@ -166,6 +173,7 @@ export default createUnplugin((config: PluginOptions) => {
         vite: {
             configResolved(c) {
                 config.root ??= c.root;
+                vite_build_mode = c.command == "build";
             },
             async configureServer(server) {
                 vite_server = server;

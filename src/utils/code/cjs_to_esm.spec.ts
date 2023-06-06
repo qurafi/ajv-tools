@@ -18,6 +18,7 @@ const example_schema = {
         email: {
             type: "string",
             format: "email",
+            minLength: 1,
         },
         test: { type: "string", format: "uuid" },
         foo: { type: "string", format: "date-time" },
@@ -36,6 +37,7 @@ function createAjvInstance() {
         code: {
             source: true,
             esm: true,
+            lines: true,
         },
         schemas: [example_schema],
     });
