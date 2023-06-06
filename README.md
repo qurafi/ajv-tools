@@ -11,7 +11,7 @@ A universal build tools plugin to handle json schemas compilation with ajv. This
 
 - Server & client optmized builds.
 - Warnings about insecure schemas.
-- Different ajv options per scema*
+- Different ajv options per schema*
 - ajv-formats and ajv-errors added by default.
 - Vite hmr support and auto ssr optmizations.
 - Optmize the generated code by the bundlers.
@@ -100,10 +100,10 @@ interface SchemaBuilderOptions {
 #### Advanced
 
 - **ajvOptions**: Pass diferent ajv options based on the instance. use `all` to apply to all instances.
-- **resolveModule**: module -> schema map by default all exports are treated as invidual schemas, but sometimes you want custom resolution, for example:
+- **resolveModule**: module -> schema map. by default all exports are treated as individual schemas, but sometimes you want a custom resolution, for example:
 
     ```javascript
-    async resolveModule(module, file) {
+    async function resolveModule(module, file) {
         if (file.startsWith("routes/")) {
             /*
             Resolve from:
@@ -126,9 +126,7 @@ interface SchemaBuilderOptions {
 
 <br>
 
-- **Module loader**: Responsible for building and loading the source files for the schema. The default loader will bundle the files with esbuild and import them using a dynamic import.
-<br>
-    It's rare case to use a custom loader as the default loader will handle most cases including transpilling typescript. An example of custom loader that used by the vite plugin:
+- **Module loader**: Responsible for building and loading the source files for the schema. The default loader will bundle the files with esbuild and import them using a dynamic import. It's rare case to use a custom loader as the default loader will handle most cases including transpilling typescript. An example of custom loader that used by the vite plugin:
 
     ```typescript
     moduleLoader(context) {
