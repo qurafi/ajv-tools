@@ -1,10 +1,24 @@
 {
     "name": "ajv-build-tools",
-    "description": "",
+    "description": "A tool to manage compiling json schemas with ajv to integrate with build tools like rollup and vite",
     "version": "0.0.2-next.0",
     "main": "./dist/index.js",
     "module": "./dist/index.mjs",
     "types": "./dist/index.d.ts",
+    "keywords": [
+        "ajv",
+        "jsonschema",
+        "validation",
+        "vite",
+        "rollup",
+        "unplugin",
+        "rollup-plugin",
+        "vite-plugin"
+    ],
+    "repository": "https://github.com/qurafi/ajv-tools",
+    "bugs": "https://github.com/qurafi/ajv-tools/issues",
+    "author": "Mohammed Al-Qurafi <mohammedqurafi@gmail.com> (https://github.com/qurafi/)",
+    "license": "MIT",
     "exports": {
         ".": {
             "types": "./dist/index.d.ts",
@@ -40,9 +54,6 @@
         "ts:check": "tsc --noEmit",
         "pkglint": "publint"
     },
-    "keywords": [],
-    "author": "",
-    "license": "MIT",
     "dependencies": {
         "@sinclair/typebox": "^0.28.13",
         "ajv": "^8.12.0",
