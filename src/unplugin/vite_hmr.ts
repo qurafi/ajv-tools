@@ -27,10 +27,12 @@ export default function builderHmrVitePlugin(server: ViteDevServer): Plugin {
             // so we could support ?queries params
             const file_prefix = `\0$schemas/${file}`;
 
-            for (const id of idToModuleMap.keys()) {
-                if (id.startsWith(file_prefix)) {
-                    console.log(id);
-                    const module = server.moduleGraph.getModuleById(id);
+            // sometimes vite does not update the whole graph of $schemas?t=all so we need to make sure
+            const tall = `\0$schemas?t=`;
+
+            for (const mod of idToModuleMap.keys()) {
+                if (mod.startsWith(file_prefix) || mod.startsWith(tall)) {
+                    const module = server.moduleGraph.getModuleById(mod);
                     if (module) {
                         modules_to_reload.push(server.reloadModule(module));
                     }
