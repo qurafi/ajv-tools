@@ -1,6 +1,9 @@
 lockfileVersion: '6.0'
 
 dependencies:
+  '@sinclair/typebox':
+    specifier: ^0.28.13
+    version: 0.28.13
   ajv:
     specifier: ^8.12.0
     version: 8.12.0
@@ -76,7 +79,7 @@ devDependencies:
     specifier: ^6.7.0
     version: 6.7.0(typescript@5.0.3)
   typescript:
-    specifier: ^5.0.2
+    specifier: ^5.0.3
     version: 5.0.3
   vite:
     specifier: ^4.3.2
@@ -382,6 +385,10 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /@sinclair/typebox@0.28.13:
+    resolution: {integrity: sha512-bSHHPYPB3UGMoa1n85cpzpMXksFabJA2ZUNojojg4gqfaSUgSmtAG+AbCAGJSylQYbk5slOxkQymqWXEv492aw==}
+    dev: false
 
   /@tootallnate/once@2.0.0:
     resolution: {integrity: sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==}

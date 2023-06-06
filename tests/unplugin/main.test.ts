@@ -27,8 +27,10 @@ describe("importing schemas", async () => {
     ];
 
     const { server } = await setupVite({
+        listenPort: 5174,
         fixture: "vite-simple-app",
         pluginOptions: {
+            // exclude: [],
             ajvOptions: {
                 all: {
                     schemas: [global_schemas],
@@ -36,8 +38,6 @@ describe("importing schemas", async () => {
             },
         },
     });
-
-    await server.listen(5174);
 
     const url = server.resolvedUrls?.local?.[0] as string;
 
@@ -121,6 +121,7 @@ describe("importing schemas", async () => {
         });
     });
 
+    //TODO move it to a seperate test
     async function testClientBuilds(invalid: boolean) {
         const browser = await puppeteer.launch({
             headless: "new",
@@ -212,6 +213,14 @@ describe("importing schemas", async () => {
             return (expected_errors as any)[prop] == err.message;
         });
         expect(expected).toHaveLength(2);
+    });
+
+    it("should work with typebox", async () => {
+        await server.ssrLoadModule("$schemas/schemas/typebox");
+    });
+
+    it("test cjs interop  with 'ajv/dist/...length' import", async () => {
+        await server.ssrLoadModule("$schemas/schemas/length");
     });
 
     afterAll(async () => {

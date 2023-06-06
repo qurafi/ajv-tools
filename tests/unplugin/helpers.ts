@@ -1,16 +1,20 @@
 import path from "path";
-import fse from "fs-extra";
 import { InlineConfig, createServer } from "vite";
 import unpluginAjv, { PluginOptions } from "../../src/unplugin";
 import { readFile, writeFile } from "fs/promises";
 import { setTimeout } from "timers/promises";
 
+export function resolveFixturePath(fixture: string) {
+    return path.resolve(__dirname, `../fixtures/${fixture}`);
+}
+
 export async function setupVite(opts: {
     pluginOptions?: Omit<PluginOptions, "include">;
     viteOptions?: InlineConfig;
     fixture: string;
+    listenPort?: number;
 }) {
-    const fixtures = path.resolve(__dirname, `../fixtures/${opts.fixture}`);
+    const fixtures = resolveFixturePath(opts.fixture);
 
     opts.viteOptions = {
         root: fixtures,
@@ -22,7 +26,13 @@ export async function setupVite(opts: {
 
     opts.viteOptions.plugins?.push(
         unpluginAjv.vite({
-            include: ["./src/routes/**/schema.{ts,js}", "./src/schemas/**/*.{ts,js}"],
+            include: [
+                // ?(d.)
+                "./src/routes/**/schema.{?(d.)ts,js}",
+                "./src/schemas/**/*.{?(d.)ts,js}",
+            ],
+            // TODO WIP d.ts loader
+            exclude: ["**/*.d.ts"],
             ...opts.pluginOptions,
         })
     );
@@ -30,8 +40,11 @@ export async function setupVite(opts: {
     const src = path.resolve(opts.viteOptions.root!, "src");
 
     const server = await createServer(opts.viteOptions);
-
-    await server.pluginContainer.buildStart({});
+    if (opts.listenPort) {
+        await server.listen(opts.listenPort);
+    } else {
+        await server.pluginContainer.buildStart({});
+    }
 
     return { server, fixtures, src, fixture_path: fixtures };
 }

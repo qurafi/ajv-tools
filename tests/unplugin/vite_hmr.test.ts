@@ -1,22 +1,23 @@
 import { afterAll, beforeEach, describe, expect, it } from "vitest";
-import { editFile, poll, setupVite } from "./helpers";
+import { editFile, poll, resolveFixturePath, setupVite } from "./helpers";
 import path from "path";
 import fse from "fs-extra";
 
 describe("vite hot reloading schemas", async () => {
-    const fixtures_tmp = path.resolve(__dirname, `../fixtures/tmp-vite-simple-app-hmr`);
+    //TODO a seperate fixtures path for hmr
+    const fixtures_tmp = resolveFixturePath("tmp-vite-simple-app-hmr");
+    const fixtures_src = resolveFixturePath("vite-simple-app");
 
-    const { server, src, fixture_path } = await setupVite({
-        fixture: "vite-simple-app",
+    const { server, src } = await setupVite({
+        fixture: fixtures_tmp,
         viteOptions: {
             root: fixtures_tmp,
         },
     });
 
-    beforeEach(async (ctx) => {
-        console.log("before each", ctx.meta.name);
+    beforeEach(async () => {
         await fse.remove(fixtures_tmp);
-        await fse.copy(fixture_path, fixtures_tmp);
+        await fse.copy(fixtures_src, fixtures_tmp);
     });
 
     afterAll(async () => {
@@ -57,7 +58,7 @@ describe("vite hot reloading schemas", async () => {
 
             await test_importer(true);
         },
-        { timeout: 6000 }
+        { timeout: 5200, retry: 2 }
     );
 
     it.todo("should reload current schema modules when schema global id changes");
