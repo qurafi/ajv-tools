@@ -32,6 +32,8 @@ export function warnAboutInsecure(file: string, export_name: string) {
             secure_warn_context
         );
 
+        logger.warn("allErrors option will be disabled for this schema");
+
         secure_warn_context = {};
     });
 }
