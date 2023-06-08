@@ -7,5 +7,5 @@ export const User = {
 
 export const RefUser = {
     // same file reference
-    $ref: "#User",
+    $ref: "User.json",
 };

@@ -160,13 +160,11 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
         return transformCJS(code, interop);
     }
 
-    /** Generate code represent all defined schema in a file */
     function getFileJsonSchemas(
         file: string,
-        /** server=true, return a json schema with extra information($$meta)
+        /** server=true, return a json schema with $$meta property for extra information
          *
-         * server=false, return the json schema as stored in ajv and without $$meta prop
-         * to avoid leaking schema information to client
+         * server=false, return the json schema as stored in ajv(without $$meta prop)
          */
         server = false
     ) {
@@ -240,7 +238,7 @@ export function initInstances(instances: Record<string, Ajv>) {
 }
 
 export function resolveSchemaRef(file: string, ref: string) {
-    return `file://${removeSchemaFileExt(file)}#${ref}`;
+    return `file://${removeSchemaFileExt(file)}/${ref}.json`;
 }
 
 export const enforcedAjvOptions: AjvOptions = {

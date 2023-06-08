@@ -17,10 +17,10 @@ exports[`createAjvFileStore > getSchemaFileCode should return the code and valid
 exports[`createAjvFileStore > should load all schemas 1`] = `
 [
   [
-    "file://s/a.schema#default",
+    "file://s/a.schema/default.json",
     SchemaEnv {
       "$async": undefined,
-      "baseId": "file://s/a.schema#default",
+      "baseId": "file://s/a.schema/default.json",
       "dynamicAnchors": {},
       "localRefs": {},
       "meta": undefined,
@@ -34,10 +34,10 @@ exports[`createAjvFileStore > should load all schemas 1`] = `
     },
   ],
   [
-    "file://s/b.schema#default",
+    "file://s/b.schema/default.json",
     SchemaEnv {
       "$async": undefined,
-      "baseId": "file://s/b.schema#default",
+      "baseId": "file://s/b.schema/default.json",
       "dynamicAnchors": {},
       "localRefs": {},
       "meta": undefined,
@@ -51,7 +51,7 @@ exports[`createAjvFileStore > should load all schemas 1`] = `
     },
   ],
   [
-    "file://s/c.schema#default",
+    "file://s/c.schema/default.json",
     SchemaEnv {
       "$async": undefined,
       "baseId": "c",
@@ -78,7 +78,7 @@ exports[`createAjvFileStore > should load all schemas 1`] = `
     },
   ],
   [
-    "file://s/a.schema#a",
+    "file://s/a.schema/a.json",
     SchemaEnv {
       "$async": undefined,
       "baseId": "a",
@@ -105,10 +105,10 @@ exports[`createAjvFileStore > should load all schemas 1`] = `
     },
   ],
   [
-    "file://s/b.schema#b",
+    "file://s/b.schema/b.json",
     SchemaEnv {
       "$async": undefined,
-      "baseId": "file://s/b.schema#b",
+      "baseId": "file://s/b.schema/b.json",
       "dynamicAnchors": {},
       "localRefs": {},
       "meta": undefined,
@@ -122,7 +122,7 @@ exports[`createAjvFileStore > should load all schemas 1`] = `
     },
   ],
   [
-    "file://s/a.schema#to_be_removed",
+    "file://s/a.schema/to_be_removed.json",
     SchemaEnv {
       "$async": undefined,
       "baseId": "to_be_removed",

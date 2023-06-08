@@ -25,9 +25,9 @@ suite("ajv options per schema", async () => {
     // console.log([...store.files.keys()], ajv.schemas);
 
     it("should respect invidual schema options: allErrors", () => {
-        const single_errors = ajv.getSchema("file://s/errors#single_error");
-        const multiple_errors = ajv.getSchema("file://s/errors#multiple_errors");
-        const default_error = ajv.getSchema("file://s/errors#default");
+        const single_errors = ajv.getSchema("file://s/errors/single_error.json");
+        const multiple_errors = ajv.getSchema("file://s/errors/multiple_errors.json");
+        const default_error = ajv.getSchema("file://s/errors/default.json");
         expect(single_errors).toBeTypeOf("function");
         const invalid_data = {
             a: null,
@@ -43,7 +43,7 @@ suite("ajv options per schema", async () => {
 
     it("should respect invidual schema options: coerceTypes", async () => {
         const schemas_entries = ["a", "b", "c", "d"].map((v) => {
-            return [v, ajv.getSchema("file://s/coerceTypes#" + v)];
+            return [v, ajv.getSchema(`file://s/coerceTypes/${v}.json`)];
         });
         const schemas = Object.fromEntries(schemas_entries);
 
@@ -68,7 +68,7 @@ suite("ajv options per schema", async () => {
 
     //TODO
     it.todo("errors should not conflicts when reference other schema", async () => {
-        const ref2a = ajv.getSchema("file://s/ref2a#default");
+        const ref2a = ajv.getSchema("file://s/ref2a/default.json");
 
         const code = standaloneCode(ajv, ref2a);
         const tmp_path = resolve(__dirname, `./ref2a.tmp.js`);
