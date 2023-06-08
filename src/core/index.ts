@@ -51,7 +51,7 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
 
     const { root, exclude, include, baseDir, ajvOptions } = resolved_config;
 
-    const root_base = path.resolve(root, baseDir || "");
+    const root_base = path.resolve(root, baseDir);
     const module_loader = opts.moduleLoader ?? defaultModuleLoader;
 
     const plugins = await createPluginContainer(opts.plugins);
@@ -65,11 +65,13 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
 
     const schema_files = createAjvFileStore({
         ajvInstances,
-        resolveModule(module, file) {
-            return plugins.transformFirstArg("resolveModule", module, file) ?? module;
+        async resolveModule(mod, file) {
+            const resolved = await plugins.transformFirst("resolveModule", mod, file);
+            return resolved ?? mod;
         },
-        resolveSchema(schema, file) {
-            return plugins.transformFirstArg("resolveSchema", schema, file) ?? schema;
+        async resolveSchema(schema, file) {
+            const resolved = await plugins.transformFirst("resolveSchema", schema, file);
+            return resolved ?? schema;
         },
     });
 
@@ -191,6 +193,8 @@ function resolveConfig(options: SchemaBuilderOptions) {
     const root = options.root ?? process.cwd();
 
     return {
+        baseDir: "",
+
         ...options,
 
         root,
