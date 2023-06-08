@@ -30,22 +30,6 @@ describe("importing schemas", async () => {
         listenPort: 5174,
         fixture: "vite-simple-app",
         pluginOptions: {
-            plugins: [
-                {
-                    resolveModule(module, file) {
-                        if (file == "schemas/custom_resolver.ts") {
-                            return module.default;
-                        }
-                        return module;
-                    },
-                    resolveSchema(schema, file) {
-                        if (file == "schemas/custom_resolver.ts") {
-                            return schema();
-                        }
-                        return schema;
-                    },
-                },
-            ],
             // exclude: [],
             ajvOptions: {
                 all: {

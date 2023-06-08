@@ -34,6 +34,23 @@ export async function setupVite(opts: {
             // TODO WIP d.ts loader
             exclude: ["**/*.d.ts"],
             ...opts.pluginOptions,
+            plugins: [
+                {
+                    resolveModule(module, file) {
+                        if (file == "schemas/custom_resolver.ts") {
+                            return module.default;
+                        }
+                        return module;
+                    },
+                    resolveSchema(schema, file) {
+                        if (file == "schemas/custom_resolver.ts") {
+                            return schema();
+                        }
+                        return schema;
+                    },
+                },
+                ...(opts.pluginOptions?.plugins ?? []),
+            ],
         })
     );
 
