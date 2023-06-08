@@ -6,6 +6,8 @@ export interface SchemaBuilderHooks {
 
     /** When file change handled */
     onFile(context: {
+        builder: SchemaBuilder;
+
         config: ResolvedConfig;
 
         update: UpdateType;
@@ -20,7 +22,9 @@ export interface SchemaBuilderHooks {
         // schemas: Record<string, any>;
     }): void;
 
-    //
+    resolveModule(module: Record<string, any>, file: string): Record<string, any>;
+    resolveSchema(schema: any, file: string): Record<string, any>;
+
     buildEnd(): void;
 }
 export type Plugin = Partial<SchemaBuilderHooks>;

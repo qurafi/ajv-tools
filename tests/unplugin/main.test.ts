@@ -30,6 +30,22 @@ describe("importing schemas", async () => {
         listenPort: 5174,
         fixture: "vite-simple-app",
         pluginOptions: {
+            plugins: [
+                {
+                    resolveModule(module, file) {
+                        if (file == "schemas/custom_resolver.ts") {
+                            return module.default;
+                        }
+                        return module;
+                    },
+                    resolveSchema(schema, file) {
+                        if (file == "schemas/custom_resolver.ts") {
+                            return schema();
+                        }
+                        return schema;
+                    },
+                },
+            ],
             // exclude: [],
             ajvOptions: {
                 all: {
@@ -65,12 +81,10 @@ describe("importing schemas", async () => {
 
     it.todo("should import all schemas with id", async () => {
         const module = await server.ssrLoadModule("$schemas?t=ids");
-        console.log(module);
     });
 
     it.todo("should import routes schemas", async () => {
         const module = await server.ssrLoadModule("$schemas?t=routes");
-        console.log(module);
     });
 
     function validateDefaultExport(default_export: any) {
@@ -133,7 +147,6 @@ describe("importing schemas", async () => {
 
         const json = await page.$eval("body", (body) => body.textContent);
 
-        console.log(await page.content());
         expect(json).toBeDefined();
         expect((json?.trim().length ?? 0) > 2).toBe(!invalid);
         if (!invalid) {
@@ -221,6 +234,12 @@ describe("importing schemas", async () => {
 
     it("test cjs interop  with 'ajv/dist/...length' import", async () => {
         await server.ssrLoadModule("$schemas/schemas/length");
+    });
+
+    it("custom resolver", async () => {
+        const mod = await server.ssrLoadModule("$schemas/schemas/custom_resolver");
+        expect(mod.default).toBe(undefined);
+        expect(mod.schema).toBeDefined();
     });
 
     afterAll(async () => {

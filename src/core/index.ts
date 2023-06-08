@@ -6,7 +6,6 @@ import path from "node:path";
 import { performance } from "node:perf_hooks";
 import { createDebug, ensureArray, resolvePatterns } from "../utils";
 import {
-    AjvFilesStoreOptions,
     ajvOptionsClient,
     ajvOptionsServer,
     createAjvFileStore,
@@ -41,10 +40,6 @@ export interface SchemaBuilderOptions {
 
     useDirectImport?: boolean;
 
-    resolveModule?: AjvFilesStoreOptions["resolveModule"];
-
-    resolveSchema?: AjvFilesStoreOptions["resolveSchema"];
-
     plugins?: Plugin[];
 }
 
@@ -54,8 +49,7 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
     const resolved_config = resolveConfig(opts);
     debug("config resolved", resolved_config);
 
-    const { root, exclude, include, baseDir, ajvOptions, resolveModule, resolveSchema } =
-        resolved_config;
+    const { root, exclude, include, baseDir, ajvOptions } = resolved_config;
 
     const root_base = path.resolve(root, baseDir || "");
     const module_loader = opts.moduleLoader ?? defaultModuleLoader;
@@ -71,8 +65,12 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
 
     const schema_files = createAjvFileStore({
         ajvInstances,
-        resolveModule,
-        resolveSchema,
+        resolveModule(module, file) {
+            return plugins.transformFirstArg("resolveModule", module, file);
+        },
+        resolveSchema(schema, file) {
+            return plugins.transformFirstArg("resolveSchema", schema, file);
+        },
     });
 
     const builder = {
@@ -113,6 +111,7 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
         }
 
         plugins.invokeConcurrent("onFile", {
+            builder,
             file,
             relativePath: relative_path,
             config: resolved_config,
