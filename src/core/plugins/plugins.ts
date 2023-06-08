@@ -101,10 +101,7 @@ export async function createPluginContainer<PluginDefs>(
 
         // TODO better name
         // pass the return value as first parameter to the next hook
-        async transformFirstArg<A extends keyof T>(
-            action: A,
-            ...params: HookParams<T, A>
-        ) {
+        async transformFirst<A extends keyof T>(action: A, ...params: HookParams<T, A>) {
             const [result] = await invoke(
                 {
                     action,

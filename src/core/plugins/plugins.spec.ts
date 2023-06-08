@@ -144,7 +144,7 @@ describe("plugins.ts", async () => {
     it("transform first args", async () => {
         const { container, calls } = await setupContainer();
 
-        const result = await container.transformFirstArg("transformFirst", "", 0, true);
+        const result = await container.transformFirst("transformFirst", "", 0, true);
         expect(result).toBe("aaa");
     });
 
