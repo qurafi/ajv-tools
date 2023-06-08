@@ -182,7 +182,7 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
             return [ref, ajv_schema];
         });
 
-        return Object.fromEntries(schemas);
+        return Object.fromEntries(schemas) as Record<string, any>;
     }
 
     function ensureInstance(instance: string) {
