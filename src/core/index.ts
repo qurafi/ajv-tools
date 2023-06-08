@@ -83,7 +83,7 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
         config: resolved_config,
     };
 
-    plugins.invokeConcurrent("init", { config: resolved_config, builder });
+    await plugins.invokeConcurrent("init", { config: resolved_config, builder });
 
     async function handleFileUpdate(type: UpdateType, _file: string, initial = false) {
         const file = path.resolve(root_base, _file);
@@ -110,7 +110,7 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
             await schema_files.loadFileSchemas(relative_path, await modules[file]);
         }
 
-        plugins.invokeConcurrent("onFile", {
+        await plugins.invokeConcurrent("onFile", {
             builder,
             file,
             relativePath: relative_path,
@@ -144,7 +144,7 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
 
         await Promise.all(promises);
 
-        await plugins.invokeConcurrent("buildEnd");
+        await plugins.invokeConcurrent("buildEnd", builder);
 
         debug_build("build all files in %d", performance.now() - start);
 

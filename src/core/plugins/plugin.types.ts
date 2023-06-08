@@ -25,6 +25,6 @@ export interface SchemaBuilderHooks {
     resolveModule(module: Record<string, any>, file: string): Record<string, any>;
     resolveSchema(schema: any, file: string): Record<string, any>;
 
-    buildEnd(): void;
+    buildEnd(builder: SchemaBuilder): void;
 }
 export type Plugin = Partial<SchemaBuilderHooks>;
