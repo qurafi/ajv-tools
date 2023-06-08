@@ -66,10 +66,10 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
     const schema_files = createAjvFileStore({
         ajvInstances,
         resolveModule(module, file) {
-            return plugins.transformFirstArg("resolveModule", module, file);
+            return plugins.transformFirstArg("resolveModule", module, file) ?? module;
         },
         resolveSchema(schema, file) {
-            return plugins.transformFirstArg("resolveSchema", schema, file);
+            return plugins.transformFirstArg("resolveSchema", schema, file) ?? schema;
         },
     });
 
