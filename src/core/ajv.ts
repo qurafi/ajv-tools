@@ -117,9 +117,13 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
                 schema_opts.set(schema_clone, meta.options);
             }
 
-            checkForSchemaSecuriry(schema_clone, file, export_name);
-
+            // we don't want this in Ajv instance
             delete schema_clone[meta_prop];
+
+            // store original
+            (schema[meta_prop] ??= {}).raw_schema = raw_schema;
+
+            checkForSchemaSecuriry(schema_clone, file, export_name);
 
             addSchema(schema_clone, ref);
             file_schemas.set(export_name, schema);
