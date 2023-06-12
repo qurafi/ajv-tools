@@ -90,14 +90,24 @@ describe("importing schemas", async () => {
     async function testServerJSONSchema(mod: any) {
         const original = {
             ...(await import("../fixtures/vite-simple-app/src/schemas/default_export")),
-        };
+        } as any;
+
+        const expected_schemas: Record<string, any> = {};
+        for (const [name] of Object.entries(mod.default)) {
+            const schema = original[name];
+            expected_schemas[name] = {
+                ...schema,
+                $$meta: { ...schema.$$meta, raw_schema: schema },
+            };
+        }
+
         // we didn't mutate the schema when resolving it in the builder and the source schema is technically the resolved one
-        expect(mod.default).toEqual(original);
+        expect(mod.default).toEqual(expected_schemas);
     }
 
     it("should import raw schema when adding ?raw with defaults query by file", async () => {
         const module = await server.ssrLoadModule("$schemas/schemas/default_export?raw");
-        testServerJSONSchema(module);
+        await testServerJSONSchema(module);
     });
 
     it("should import raw schema when adding ?raw&server query by file", async () => {
@@ -105,7 +115,7 @@ describe("importing schemas", async () => {
             "$schemas/schemas/default_export?raw&server"
         );
 
-        testServerJSONSchema(module);
+        await testServerJSONSchema(module);
     });
 
     it("should import raw schema when adding ?raw&client query by file", async () => {
@@ -130,7 +140,7 @@ describe("importing schemas", async () => {
         await page.goto(url + (invalid ? "index_invalid.html" : ""));
 
         const json = await page.$eval("body", (body) => body.textContent);
-
+        console.log(json);
         expect(json).toBeDefined();
         expect((json?.trim().length ?? 0) > 2).toBe(!invalid);
         if (!invalid) {
