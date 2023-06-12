@@ -1,6 +1,6 @@
 import createDebugger from "debug";
-import { bold, red, yellow } from "kleur/colors";
-import path from "node:path";
+import { red, yellow } from "kleur/colors";
+import path from "node:path/posix";
 
 export type MaybePromise<T> = Promise<T> | T;
 export type UnstrictReturnType<T> = T extends (...args: any) => infer R ? R : never;
@@ -46,3 +46,7 @@ export const logger = {
     warn: (...args: any[]) => console.error(yellow("warn: "), ...args),
     log: console.log,
 };
+
+export function posixify(str: string) {
+    return str.replace(/\\/g, "/");
+}

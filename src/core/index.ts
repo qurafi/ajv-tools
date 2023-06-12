@@ -2,9 +2,9 @@ import type { Options as AjvOptions } from "ajv";
 import Ajv from "ajv";
 import FastGlob from "fast-glob";
 import micromatch from "micromatch";
-import path from "node:path";
+import path from "node:path/posix";
 import { performance } from "node:perf_hooks";
-import { createDebug, ensureArray, resolvePatterns } from "../utils";
+import { createDebug, ensureArray, posixify, resolvePatterns } from "../utils";
 import {
     ajvOptionsClient,
     ajvOptionsServer,
@@ -19,8 +19,6 @@ import { createPluginContainer } from "./plugins/plugins.js";
 
 const debug = createDebug("core");
 const debug_build = createDebug("build");
-
-export { Plugin };
 
 export interface SchemaBuilderOptions {
     root?: string;
@@ -190,7 +188,7 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
 }
 
 function resolveConfig(options: SchemaBuilderOptions) {
-    const root = options.root ?? process.cwd();
+    const root = posixify(options.root ?? process.cwd());
 
     return {
         baseDir: "",
@@ -222,3 +220,5 @@ function resolveConfig(options: SchemaBuilderOptions) {
 export type ResolvedConfig = ReturnType<typeof resolveConfig>;
 
 export type SchemaBuilder = Awaited<ReturnType<typeof createSchemaBuilder>>;
+
+export { Plugin };
