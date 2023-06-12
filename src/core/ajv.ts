@@ -233,8 +233,9 @@ export function initInstances(instances: Record<string, Ajv>) {
             "json-pointer",
             "relative-json-pointer",
             "regex",
-            // not actual format but a hint for the UI
-            "password",
+            "iso-date-time",
+            "iso-time",
+            "password", // not actual format but a hint for the UI
         ]);
 
         addAjvErrors(instance);
