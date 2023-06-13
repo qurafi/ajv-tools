@@ -8,7 +8,7 @@ permissions:
 
 jobs:
     test-windows:
-        runs-on: ubuntu-latest
+        runs-on: windows-latest
         steps:
             - uses: actions/checkout@v3
             - uses: pnpm/action-setup@v2.2.4
