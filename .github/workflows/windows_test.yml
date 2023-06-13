@@ -18,3 +18,5 @@ jobs:
                   cache: pnpm
             - run: pnpm install --frozen-lockfile
             - run: pnpm run test
+              env:
+                  DEBUG_COLORS: 1
