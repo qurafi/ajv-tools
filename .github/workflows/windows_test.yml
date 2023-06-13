@@ -1,0 +1,20 @@
+# A ci to test windows paths
+name: Windows-tests
+
+on: workflow_dispatch
+
+permissions:
+    contents: read # to fetch code (actions/checkout)
+
+jobs:
+    test-windows:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - uses: pnpm/action-setup@v2.2.4
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: "16.x"
+                  cache: pnpm
+            - run: pnpm install --frozen-lockfile
+            - run: pnpm run test
