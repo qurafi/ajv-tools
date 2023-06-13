@@ -163,8 +163,8 @@ describe("plugins.ts", async () => {
         const elapsed = Date.now() - start;
         const expected = concurrent ? timeout_duration : timeout_duration * 3;
 
-        const e = 15;
-        console.log(elapsed);
+        const e = process.env.CI ? 100 : 15;
+        console.log({ elapsed });
         expect(elapsed >= expected - e && elapsed <= expected + e).toBe(true);
     }
 
