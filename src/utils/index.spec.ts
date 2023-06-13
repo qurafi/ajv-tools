@@ -1,7 +1,7 @@
 import { expect, it } from "vitest";
 import { parseQueries } from ".";
 
-it.only("parseQueries", () => {
+it("parseQueries", () => {
     const queries = [
         "something?q=1",
         "two?q=2?q=1",

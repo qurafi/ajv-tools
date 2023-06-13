@@ -55,7 +55,7 @@ describe("handling schema options", async () => {
         expect(data.b).toBeTypeOf(coerce ? "string" : "number");
     }
 
-    it.only("test coerceTypes: multiple options in the same file", async () => {
+    it("test coerceTypes: multiple options in the same file", async () => {
         const m = await server.ssrLoadModule(`$schemas/schemas/coerceTypes_0`);
         testCoercion(m.coerce, true);
         testCoercion(m.a_no_coerce, false);
