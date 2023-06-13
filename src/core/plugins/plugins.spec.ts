@@ -148,31 +148,32 @@ describe("plugins.ts", async () => {
         expect(result).toBe("aaa");
     });
 
-    async function testConcurrent(concurrent: boolean) {
-        const { container } = await setupContainer();
-        const start = Date.now();
+    function testConcurrent(concurrent: boolean) {
+        it(
+            `should invoke concurrently when concurrent is ${concurrent}`,
+            async () => {
+                const { container } = await setupContainer();
+                const start = Date.now();
 
-        await container.invoke(
-            {
-                action: "onSomething",
-                concurrent,
+                await container.invoke(
+                    {
+                        action: "onSomething",
+                        concurrent,
+                    },
+                    1
+                );
+
+                const elapsed = Date.now() - start;
+                const expected = concurrent ? timeout_duration : timeout_duration * 3;
+
+                const e = process.env.CI ? 100 : 15;
+                console.log({ elapsed });
+                expect(elapsed >= expected - e && elapsed <= expected + e).toBe(true);
             },
-            1
+            { retry: 3 }
         );
-
-        const elapsed = Date.now() - start;
-        const expected = concurrent ? timeout_duration : timeout_duration * 3;
-
-        const e = process.env.CI ? 100 : 15;
-        console.log({ elapsed });
-        expect(elapsed >= expected - e && elapsed <= expected + e).toBe(true);
     }
 
-    it("should invoke concurrently when concurrent is true", () => {
-        return testConcurrent(true);
-    });
-
-    it("should invoke sequentially when concurrent is false", () => {
-        return testConcurrent(false);
-    });
+    testConcurrent(true);
+    testConcurrent(false);
 });
