@@ -17,6 +17,6 @@ jobs:
                   node-version: "16.x"
                   cache: pnpm
             - run: pnpm install --frozen-lockfile
-            - run: pnpm run test
+            - run: pnpm run test:ci
               env:
                   DEBUG_COLORS: 1
