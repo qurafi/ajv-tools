@@ -8,7 +8,7 @@ export type UnstrictParameters<T> = T extends (...args: infer P) => any ? P : ne
 
 export function resolvePatterns(patterns: string | string[], root: string) {
     return ensureArray(patterns).map((pattern) => {
-        return path.resolve(root, pattern);
+        return path.join(posixify(root), pattern);
     });
 }
 

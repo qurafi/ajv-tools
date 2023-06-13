@@ -2,7 +2,7 @@ import Ajv from "ajv";
 import { unlinkSync, writeFileSync } from "node:fs";
 import { expect, it, suite } from "vitest";
 import { createAjvFileStore, enforcedAjvOptions } from "./ajv";
-import path from "node:path/posix";
+import path from "node:path";
 
 suite("createAjvFileStore", () => {
     const modules = {

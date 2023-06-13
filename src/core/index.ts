@@ -2,7 +2,7 @@ import type { Options as AjvOptions } from "ajv";
 import Ajv from "ajv";
 import FastGlob from "fast-glob";
 import micromatch from "micromatch";
-import path from "node:path/posix";
+import path from "node:path";
 import { performance } from "node:perf_hooks";
 import { createDebug, ensureArray, posixify, resolvePatterns } from "../utils";
 import {
@@ -47,9 +47,11 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
     const resolved_config = resolveConfig(opts);
     debug("config resolved", resolved_config);
 
-    const { root, exclude, include, baseDir, ajvOptions } = resolved_config;
+    const { root: root_, exclude, include, baseDir, ajvOptions } = resolved_config;
 
-    const root_base = path.resolve(root, baseDir);
+    const root = posixify(root_)
+
+    const root_base = path.posix.join(root, baseDir);
     const module_loader = opts.moduleLoader ?? defaultModuleLoader;
 
     const plugins = await createPluginContainer(opts.plugins);
@@ -86,11 +88,12 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
     await plugins.invokeConcurrent("init", { config: resolved_config, builder });
 
     async function handleFileUpdate(type: UpdateType, _file: string, initial = false) {
-        const file = path.resolve(root_base, _file);
-        const relative_path = path.relative(root_base, file);
+        const file = posixify(path.resolve(root_base, _file));
+        const relative_path = posixify(path.relative(root_base, file));
         debug_build(`${type}: ${relative_path}`);
 
-        if (!isSchemaFile(file)) {
+        if (!isSchemaFile(_file)) {
+            console.log("not a schema file", file, relative_path);
             return;
         }
 
@@ -121,9 +124,11 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
     }
 
     function isSchemaFile(file: string) {
-        return micromatch.isMatch(path.resolve(root_base, file), include, {
-            cwd: root,
-            ignore: exclude,
+        const relative = path.posix.join(root_base, file);
+        
+        return micromatch.isMatch(path.isAbsolute(file) ? file : relative, include, {
+            cwd: root_,
+            // ignore: exclude,
         });
     }
 
@@ -188,7 +193,7 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
 }
 
 function resolveConfig(options: SchemaBuilderOptions) {
-    const root = posixify(options.root ?? process.cwd());
+    const root = options.root ?? process.cwd();
 
     return {
         baseDir: "",

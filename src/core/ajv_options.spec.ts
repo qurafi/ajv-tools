@@ -2,7 +2,7 @@ import Ajv, { Options } from "ajv";
 import { writeFileSync } from "node:fs";
 import { expect, it, suite } from "vitest";
 import { createAjvFileStore, enforcedAjvOptions } from "./ajv";
-import { resolve } from "node:path/posix";
+import { resolve } from "node:path";
 import standaloneCode from "ajv/dist/standalone";
 
 suite("ajv options per schema", async () => {
