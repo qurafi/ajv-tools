@@ -6,4 +6,4 @@ pnpm install --frozen-lockfile
 pnpm lint
 pnpm ts:check
 pnpm pkglint
-pnpm test
+pnpm test -- --run
