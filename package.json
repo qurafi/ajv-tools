@@ -49,7 +49,7 @@
     "scripts": {
         "test": "DEBUG_COLORS=1 vitest",
         "test:ci": "vitest",
-        "build": "tsup 'src/**/index.ts' --format esm,cjs --dts --sourcemap --shims",
+        "build": "tsup 'src/**/index.ts' --format esm,cjs --dts --sourcemap --shims --no-splitting",
         "format": "prettier -w src/**/*.ts",
         "lint": "eslint . --ignore-path .gitignore --ignore-pattern test/fixture",
         "dev": "npm run build -- --watch",
