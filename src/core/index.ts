@@ -49,7 +49,7 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
 
     const { root: root_, exclude, include, baseDir, ajvOptions } = resolved_config;
 
-    const root = posixify(root_)
+    const root = posixify(root_);
 
     const root_base = path.posix.join(root, baseDir);
     const module_loader = opts.moduleLoader ?? defaultModuleLoader;
@@ -93,7 +93,6 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
         debug_build(`${type}: ${relative_path}`);
 
         if (!isSchemaFile(_file)) {
-            console.log("not a schema file", file, relative_path);
             return;
         }
 
@@ -125,7 +124,7 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
 
     function isSchemaFile(file: string) {
         const relative = path.posix.join(root_base, file);
-        
+
         return micromatch.isMatch(path.isAbsolute(file) ? file : relative, include, {
             cwd: root_,
             // ignore: exclude,
@@ -163,10 +162,7 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
 
     async function writeFiles(files: string[], outDir: string) {
         //TODO
-        console.log({
-            files,
-            outDir,
-        });
+        throw new Error("not implemented yet");
     }
 
     function watch(watchParams: { watcher?: chokidar.FSWatcher }) {

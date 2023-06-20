@@ -91,7 +91,6 @@ export default createUnplugin((config: PluginOptions) => {
             }
 
             await build_promise;
-            console.log(schema_builder.files);
 
             const { queries, str: id } = parseQueries(raw_id);
             const schema_ref = id.slice(resolved_prefix.length);
