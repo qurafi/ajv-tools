@@ -69,8 +69,13 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
             const resolved = await plugins.transformFirst("resolveModule", mod, file);
             return resolved ?? mod;
         },
-        async resolveSchema(schema, file) {
-            const resolved = await plugins.transformFirst("resolveSchema", schema, file);
+        async resolveSchema(schema, file, name) {
+            const resolved = await plugins.transformFirst(
+                "resolveSchema",
+                schema,
+                file,
+                name
+            );
             return resolved ?? schema;
         },
     });

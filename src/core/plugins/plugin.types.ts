@@ -23,7 +23,7 @@ export interface SchemaBuilderHooks {
     }): void;
 
     resolveModule(module: Record<string, any>, file: string): Record<string, any>;
-    resolveSchema(schema: any, file: string): Record<string, any>;
+    resolveSchema(schema: any, file: string, name: string): Record<string, any>;
 
     buildEnd(builder: SchemaBuilder): void;
 }

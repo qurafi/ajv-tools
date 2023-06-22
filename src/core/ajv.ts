@@ -16,7 +16,7 @@ const debug = createDebug("files");
 export interface AjvFilesStoreOptions {
     ajvInstances: Record<string, Ajv>;
     resolveModule?(module: Record<string, unknown>, file: string): Record<string, any>;
-    resolveSchema?(schema: any, source: string): any;
+    resolveSchema?(schema: any, source: string, name: string): any;
 }
 
 export interface SchemaMeta {
@@ -96,7 +96,7 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
         files.set(removeSchemaFileExt(file), file_schemas);
 
         for (const [export_name, raw_schema] of schemas_entries) {
-            const schema = await resolveSchema(clone(raw_schema), file);
+            const schema = await resolveSchema(clone(raw_schema), file, export_name);
 
             if (schema == undefined) {
                 continue;
