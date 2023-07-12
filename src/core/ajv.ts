@@ -8,6 +8,7 @@ import { transformCJS } from "../utils/code/cjs_to_esm.js";
 import { createDebug, logger, removeSchemaFileExt } from "../utils/index.js";
 import { AjvCompileOptions, schema_opts } from "./ajv_options.js";
 import { checkForSchemaSecuriry } from "./is_schema_secure.js";
+import addAjvKeywords from "ajv-keywords";
 
 const clone = rfdc();
 
@@ -237,6 +238,12 @@ export function initInstances(instances: Record<string, Ajv>) {
             "iso-time",
             "password", // not actual format but a hint for the UI
         ]);
+
+        addAjvKeywords(instance);
+
+        const not_supported = ["instanceof", "uniqueItemProperties", "dynamicDefaults"];
+
+        not_supported.forEach((keyword) => instance.removeKeyword(keyword));
 
         addAjvErrors(instance);
     }

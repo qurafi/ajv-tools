@@ -17,6 +17,522 @@ exports[`createAjvFileStore > getSchemaFileCode should return the code and valid
 exports[`createAjvFileStore > should load all schemas 1`] = `
 [
   [
+    "http://json-schema.org/draft-07/schema",
+    SchemaEnv {
+      "$async": undefined,
+      "baseId": "http://json-schema.org/draft-07/schema",
+      "dynamicAnchors": {},
+      "localRefs": {},
+      "meta": true,
+      "refs": {
+        "http://json-schema.org/draft-07/schema#/definitions/nonNegativeInteger": {
+          "minimum": 0,
+          "type": "integer",
+        },
+        "http://json-schema.org/draft-07/schema#/definitions/nonNegativeIntegerDefault0": SchemaEnv {
+          "$async": undefined,
+          "baseId": "http://json-schema.org/draft-07/schema",
+          "dynamicAnchors": {},
+          "localRefs": undefined,
+          "meta": undefined,
+          "refs": {},
+          "root": [Circular],
+          "schema": {
+            "allOf": [
+              {
+                "$ref": "#/definitions/nonNegativeInteger",
+              },
+              {
+                "default": 0,
+              },
+            ],
+          },
+          "schemaId": "$id",
+          "schemaPath": undefined,
+          "validate": [Function],
+          "validateName": ValueScopeName {
+            "prefix": "validate",
+            "scopePath": _Code {
+              "_items": [
+                ".",
+                Name {
+                  "str": "validate",
+                },
+                "[",
+                0,
+                "]",
+              ],
+            },
+            "str": "validate1",
+            "value": {
+              "ref": [Function],
+            },
+          },
+        },
+        "http://json-schema.org/draft-07/schema#/definitions/schemaArray": SchemaEnv {
+          "$async": undefined,
+          "baseId": "http://json-schema.org/draft-07/schema",
+          "dynamicAnchors": {},
+          "localRefs": undefined,
+          "meta": undefined,
+          "refs": {},
+          "root": [Circular],
+          "schema": {
+            "items": {
+              "$ref": "#",
+            },
+            "minItems": 1,
+            "type": "array",
+          },
+          "schemaId": "$id",
+          "schemaPath": undefined,
+          "validate": [Function],
+          "validateName": ValueScopeName {
+            "prefix": "validate",
+            "scopePath": _Code {
+              "_items": [
+                ".",
+                Name {
+                  "str": "validate",
+                },
+                "[",
+                1,
+                "]",
+              ],
+            },
+            "str": "validate3",
+            "value": {
+              "ref": [Function],
+            },
+          },
+        },
+        "http://json-schema.org/draft-07/schema#/definitions/simpleTypes": {
+          "enum": [
+            "array",
+            "boolean",
+            "integer",
+            "null",
+            "number",
+            "object",
+            "string",
+          ],
+        },
+        "http://json-schema.org/draft-07/schema#/definitions/stringArray": {
+          "default": [],
+          "items": {
+            "type": "string",
+          },
+          "type": "array",
+          "uniqueItems": true,
+        },
+        "https://raw.githubusercontent.com/ajv-validator/ajv/master/lib/refs/data.json": {
+          "$id": "https://raw.githubusercontent.com/ajv-validator/ajv/master/lib/refs/data.json#",
+          "additionalProperties": false,
+          "description": "Meta-schema for $data reference (JSON AnySchema extension proposal)",
+          "properties": {
+            "$data": {
+              "anyOf": [
+                {
+                  "format": "relative-json-pointer",
+                },
+                {
+                  "format": "json-pointer",
+                },
+              ],
+              "type": "string",
+            },
+          },
+          "required": [
+            "$data",
+          ],
+          "type": "object",
+        },
+      },
+      "root": [Circular],
+      "schema": {
+        "$id": "http://json-schema.org/draft-07/schema#",
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "default": true,
+        "definitions": {
+          "nonNegativeInteger": {
+            "minimum": 0,
+            "type": "integer",
+          },
+          "nonNegativeIntegerDefault0": {
+            "allOf": [
+              {
+                "$ref": "#/definitions/nonNegativeInteger",
+              },
+              {
+                "default": 0,
+              },
+            ],
+          },
+          "schemaArray": {
+            "items": {
+              "$ref": "#",
+            },
+            "minItems": 1,
+            "type": "array",
+          },
+          "simpleTypes": {
+            "enum": [
+              "array",
+              "boolean",
+              "integer",
+              "null",
+              "number",
+              "object",
+              "string",
+            ],
+          },
+          "stringArray": {
+            "default": [],
+            "items": {
+              "type": "string",
+            },
+            "type": "array",
+            "uniqueItems": true,
+          },
+        },
+        "properties": {
+          "$comment": {
+            "type": "string",
+          },
+          "$id": {
+            "format": "uri-reference",
+            "type": "string",
+          },
+          "$ref": {
+            "format": "uri-reference",
+            "type": "string",
+          },
+          "$schema": {
+            "format": "uri",
+            "type": "string",
+          },
+          "additionalItems": {
+            "$ref": "#",
+          },
+          "additionalProperties": {
+            "$ref": "#",
+          },
+          "allOf": {
+            "$ref": "#/definitions/schemaArray",
+          },
+          "anyOf": {
+            "$ref": "#/definitions/schemaArray",
+          },
+          "const": {
+            "anyOf": [
+              true,
+              {
+                "$ref": "https://raw.githubusercontent.com/ajv-validator/ajv/master/lib/refs/data.json#",
+              },
+            ],
+          },
+          "contains": {
+            "$ref": "#",
+          },
+          "contentEncoding": {
+            "type": "string",
+          },
+          "contentMediaType": {
+            "type": "string",
+          },
+          "default": true,
+          "definitions": {
+            "additionalProperties": {
+              "$ref": "#",
+            },
+            "default": {},
+            "type": "object",
+          },
+          "dependencies": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "$ref": "#",
+                },
+                {
+                  "$ref": "#/definitions/stringArray",
+                },
+              ],
+            },
+            "type": "object",
+          },
+          "description": {
+            "type": "string",
+          },
+          "else": {
+            "$ref": "#",
+          },
+          "enum": {
+            "anyOf": [
+              {
+                "items": true,
+                "minItems": 1,
+                "type": "array",
+                "uniqueItems": true,
+              },
+              {
+                "$ref": "https://raw.githubusercontent.com/ajv-validator/ajv/master/lib/refs/data.json#",
+              },
+            ],
+          },
+          "examples": {
+            "items": true,
+            "type": "array",
+          },
+          "exclusiveMaximum": {
+            "anyOf": [
+              {
+                "type": "number",
+              },
+              {
+                "$ref": "https://raw.githubusercontent.com/ajv-validator/ajv/master/lib/refs/data.json#",
+              },
+            ],
+          },
+          "exclusiveMinimum": {
+            "anyOf": [
+              {
+                "type": "number",
+              },
+              {
+                "$ref": "https://raw.githubusercontent.com/ajv-validator/ajv/master/lib/refs/data.json#",
+              },
+            ],
+          },
+          "format": {
+            "anyOf": [
+              {
+                "type": "string",
+              },
+              {
+                "$ref": "https://raw.githubusercontent.com/ajv-validator/ajv/master/lib/refs/data.json#",
+              },
+            ],
+          },
+          "if": {
+            "$ref": "#",
+          },
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#",
+              },
+              {
+                "$ref": "#/definitions/schemaArray",
+              },
+            ],
+            "default": true,
+          },
+          "maxItems": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/nonNegativeInteger",
+              },
+              {
+                "$ref": "https://raw.githubusercontent.com/ajv-validator/ajv/master/lib/refs/data.json#",
+              },
+            ],
+          },
+          "maxLength": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/nonNegativeInteger",
+              },
+              {
+                "$ref": "https://raw.githubusercontent.com/ajv-validator/ajv/master/lib/refs/data.json#",
+              },
+            ],
+          },
+          "maxProperties": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/nonNegativeInteger",
+              },
+              {
+                "$ref": "https://raw.githubusercontent.com/ajv-validator/ajv/master/lib/refs/data.json#",
+              },
+            ],
+          },
+          "maximum": {
+            "anyOf": [
+              {
+                "type": "number",
+              },
+              {
+                "$ref": "https://raw.githubusercontent.com/ajv-validator/ajv/master/lib/refs/data.json#",
+              },
+            ],
+          },
+          "minItems": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/nonNegativeIntegerDefault0",
+              },
+              {
+                "$ref": "https://raw.githubusercontent.com/ajv-validator/ajv/master/lib/refs/data.json#",
+              },
+            ],
+          },
+          "minLength": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/nonNegativeIntegerDefault0",
+              },
+              {
+                "$ref": "https://raw.githubusercontent.com/ajv-validator/ajv/master/lib/refs/data.json#",
+              },
+            ],
+          },
+          "minProperties": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/nonNegativeIntegerDefault0",
+              },
+              {
+                "$ref": "https://raw.githubusercontent.com/ajv-validator/ajv/master/lib/refs/data.json#",
+              },
+            ],
+          },
+          "minimum": {
+            "anyOf": [
+              {
+                "type": "number",
+              },
+              {
+                "$ref": "https://raw.githubusercontent.com/ajv-validator/ajv/master/lib/refs/data.json#",
+              },
+            ],
+          },
+          "multipleOf": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0,
+                "type": "number",
+              },
+              {
+                "$ref": "https://raw.githubusercontent.com/ajv-validator/ajv/master/lib/refs/data.json#",
+              },
+            ],
+          },
+          "not": {
+            "$ref": "#",
+          },
+          "oneOf": {
+            "$ref": "#/definitions/schemaArray",
+          },
+          "pattern": {
+            "anyOf": [
+              {
+                "format": "regex",
+                "type": "string",
+              },
+              {
+                "$ref": "https://raw.githubusercontent.com/ajv-validator/ajv/master/lib/refs/data.json#",
+              },
+            ],
+          },
+          "patternProperties": {
+            "additionalProperties": {
+              "$ref": "#",
+            },
+            "default": {},
+            "propertyNames": {
+              "format": "regex",
+            },
+            "type": "object",
+          },
+          "properties": {
+            "additionalProperties": {
+              "$ref": "#",
+            },
+            "default": {},
+            "type": "object",
+          },
+          "propertyNames": {
+            "$ref": "#",
+          },
+          "readOnly": {
+            "default": false,
+            "type": "boolean",
+          },
+          "required": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/stringArray",
+              },
+              {
+                "$ref": "https://raw.githubusercontent.com/ajv-validator/ajv/master/lib/refs/data.json#",
+              },
+            ],
+          },
+          "then": {
+            "$ref": "#",
+          },
+          "title": {
+            "type": "string",
+          },
+          "type": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/simpleTypes",
+              },
+              {
+                "items": {
+                  "$ref": "#/definitions/simpleTypes",
+                },
+                "minItems": 1,
+                "type": "array",
+                "uniqueItems": true,
+              },
+            ],
+          },
+          "uniqueItems": {
+            "anyOf": [
+              {
+                "default": false,
+                "type": "boolean",
+              },
+              {
+                "$ref": "https://raw.githubusercontent.com/ajv-validator/ajv/master/lib/refs/data.json#",
+              },
+            ],
+          },
+        },
+        "title": "Core schema meta-schema",
+        "type": [
+          "object",
+          "boolean",
+        ],
+      },
+      "schemaId": "$id",
+      "schemaPath": undefined,
+      "validate": [Function],
+      "validateName": ValueScopeName {
+        "prefix": "validate",
+        "scopePath": _Code {
+          "_items": [
+            ".",
+            Name {
+              "str": "validate",
+            },
+            "[",
+            2,
+            "]",
+          ],
+        },
+        "str": "validate0",
+        "value": {
+          "ref": [Function],
+        },
+      },
+    },
+  ],
+  [
     "file://s/a.schema/default.json",
     SchemaEnv {
       "$async": undefined,
