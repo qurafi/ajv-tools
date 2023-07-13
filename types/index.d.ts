@@ -1,5 +1,5 @@
 declare module "$schemas?t=all" {
-    declare const Schemas: Record<string, () => Promise<Record<string, any>>>;
+    const Schemas: Record<string, () => Promise<Record<string, any>>>;
     export default Schemas;
 }
 
