@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`transform ajv compiled code from commonjs to esm > transform match snapshot, intetop = true > import {default as import_0} from "ajv/dist/runtime/validation_error.js";
+exports[`transform ajv compiled code from commonjs to esm > transform match snapshot, interop = true > import {default as import_0} from "ajv/dist/runtime/validation_error.js";
 import {fullFormats as import_1} from "ajv-formats/dist/formats.js";
 import {default as import_2} from "ajv/dist/runtime/ucs2length.js";
 
