@@ -96,7 +96,8 @@ export default createUnplugin((config: PluginOptions) => {
             const schema_ref = id.slice(resolved_prefix.length);
             const instance = queries.has("server") ? "server" : "client";
 
-            const interop = vite_build_mode && instance == "server";
+            // const interop = vite_build_mode && instance == "server";
+            const interop = instance == "server";
 
             //TODO we need to think of a way to produce the raw code as transformed by vite
             const raw_code = queries.has("code");

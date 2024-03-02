@@ -55,7 +55,7 @@ async function createAjvViteInstance() {
                 const code = standaloneCode(ajv, ajv.getSchema("id"));
 
                 if (id == valid_import_id) {
-                    return transformCJS(code);
+                    return transformCJS(code, true);
                 }
 
                 return code;
@@ -65,6 +65,7 @@ async function createAjvViteInstance() {
 
     const vite = await createServer({
         configFile: false,
+        logLevel: "silent",
         root: path.resolve(__dirname, ".."),
         plugins: [testPlugin],
     });
@@ -72,22 +73,24 @@ async function createAjvViteInstance() {
 }
 
 suite("transform ajv compiled code from commonjs to esm", async () => {
-    test("transform match snapshot", async () => {
+    test("transform match snapshot, interop = true", async () => {
         const ajv = createAjvInstance();
 
         const schema = ajv.getSchema("id");
-        const code = transformCJS(standaloneCode(ajv, schema));
+        const code = transformCJS(standaloneCode(ajv, schema), true);
         expect(code).toMatchSnapshot(code);
     });
 
+    test.todo("transform match snapshot, interop = false");
+
     test("transformed code should work correctly with vite esm imports", async () => {
         const { vite } = await createAjvViteInstance();
+
         const m = await vite.ssrLoadModule(valid_import_id);
 
-        expect(
-            m.default,
-            "default export should be the validatation function"
-        ).toBeTypeOf("function");
+        expect(m.default, "default export should be the validation function").toBeTypeOf(
+            "function"
+        );
 
         expect(m.validate, "validate export should be a function").toBeTypeOf("function");
         await expect(m.validate({ email: "w" })).rejects.toThrow(/validation failed/);

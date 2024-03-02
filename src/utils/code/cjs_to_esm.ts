@@ -1,6 +1,6 @@
 // ajv currently does not support esm import for some imports
 // the code expected to work with ajv compiled code and does not handle every cjs cases
-export function transformCJS(code: string, interop = false) {
+export function transformCJS(code: string, interop: boolean) {
     const paths: Record<string, number> = {};
 
     let prepend = "";
@@ -22,7 +22,6 @@ export function transformCJS(code: string, interop = false) {
             }
 
             if (!paths[path]) {
-                // const imported = `{${first_import} as ${fn}}`;
                 const imported = `{${first_import} as import_${import_n}}`;
                 prepend += `import ${imported} from "${path}.js";\n`;
                 paths[path] = import_n;
@@ -30,7 +29,6 @@ export function transformCJS(code: string, interop = false) {
             }
 
             const use_default = interop && first_import == "default" ? ".default" : "";
-            // const use_default = "";
 
             const alias = `import_${paths[path]}${use_default}${property_access}`;
             return `const ${fn} = ${alias};`;
