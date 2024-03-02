@@ -2,19 +2,20 @@ import { ViteDevServer } from "vite";
 import { Plugin, SchemaBuilder } from "../core";
 import { removeSchemaFileExt } from "../utils";
 
-export default function builderHmrVitePlugin(server: ViteDevServer): Plugin {
+export default function viteHmrBuilderPlugin(server: ViteDevServer): Plugin {
     let schema_builder: SchemaBuilder;
     return {
         init(context) {
             schema_builder = context.builder;
         },
         onFile: async ({ relativePath, file: absolutePath, initial }) => {
-            if (initial) {
-                return;
+            const file = removeSchemaFileExt(relativePath);
+
+            const modules = server.moduleGraph.getModulesByFile(absolutePath);
+            for (const mod of modules ?? []) {
+                server.reloadModule(mod);
             }
 
-            const modules_to_reload: Promise<void>[] = [];
-            const file = removeSchemaFileExt(relativePath);
             const { idToModuleMap } = server.moduleGraph;
             const importers = idToModuleMap.get(absolutePath)?.importers;
 
@@ -34,12 +35,10 @@ export default function builderHmrVitePlugin(server: ViteDevServer): Plugin {
                 if (mod.startsWith(file_prefix) || mod.startsWith(tall)) {
                     const module = server.moduleGraph.getModuleById(mod);
                     if (module) {
-                        modules_to_reload.push(server.reloadModule(module));
+                        server.reloadModule(module);
                     }
                 }
             }
-
-            await Promise.all(modules_to_reload);
 
             //TODO reload by id
         },
