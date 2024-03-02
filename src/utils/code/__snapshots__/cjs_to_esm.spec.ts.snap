@@ -1,12 +1,12 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`transform ajv compiled code from commonjs to esm > transform match snapshot > import {default as import_0} from "ajv/dist/runtime/validation_error.js";
+exports[`transform ajv compiled code from commonjs to esm > transform match snapshot, intetop = true > import {default as import_0} from "ajv/dist/runtime/validation_error.js";
 import {fullFormats as import_1} from "ajv-formats/dist/formats.js";
 import {default as import_2} from "ajv/dist/runtime/ucs2length.js";
 
 export const validate = validate10;
 export default validate10;
-const Error0 = import_0;
+const Error0 = import_0.default;
 const schema11 = {"$id":"id","$async":true,"type":"object","properties":{"nested":{"type":"number","minimum":2},"email":{"type":"string","format":"email","minLength":1},"test":{"type":"string","format":"uuid"},"foo":{"type":"string","format":"date-time"},"time":{"type":"string","format":"time"},"binary":{"type":"string","format":"binary"},"url":{"type":"string","format":"url"},"double":{"type":"string","format":"double"}}};
 const formats0 = /^[a-z0-9!#$%&'*+/=?^_\`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_\`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i;
 const formats2 = /^(?:urn:uuid:)?[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i;
@@ -14,7 +14,7 @@ const formats4 = import_1["date-time"];
 const formats6 = import_1.time;
 const formats8 = /^(?:https?|ftp):\\/\\/(?:\\S+(?::\\S*)?@)?(?:(?!(?:10|127)(?:\\.\\d{1,3}){3})(?!(?:169\\.254|192\\.168)(?:\\.\\d{1,3}){2})(?!172\\.(?:1[6-9]|2\\d|3[0-1])(?:\\.\\d{1,3}){2})(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[1-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z0-9\\u{00a1}-\\u{ffff}]+-)*[a-z0-9\\u{00a1}-\\u{ffff}]+)(?:\\.(?:[a-z0-9\\u{00a1}-\\u{ffff}]+-)*[a-z0-9\\u{00a1}-\\u{ffff}]+)*(?:\\.(?:[a-z\\u{00a1}-\\u{ffff}]{2,})))(?::\\d{2,5})?(?:\\/[^\\s]*)?$/iu;
 const formats10 = import_1.double;
-const func2 = import_2;
+const func2 = import_2.default;
 
 async function validate10(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
 /*# sourceURL="id" */;
@@ -206,39 +206,39 @@ throw new Error0(vErrors);
 }
 }
  1`] = `
-"import {default as import_0} from \\"ajv/dist/runtime/validation_error.js\\";
-import {fullFormats as import_1} from \\"ajv-formats/dist/formats.js\\";
-import {default as import_2} from \\"ajv/dist/runtime/ucs2length.js\\";
+"import {default as import_0} from "ajv/dist/runtime/validation_error.js";
+import {fullFormats as import_1} from "ajv-formats/dist/formats.js";
+import {default as import_2} from "ajv/dist/runtime/ucs2length.js";
 
 export const validate = validate10;
 export default validate10;
-const Error0 = import_0;
-const schema11 = {\\"$id\\":\\"id\\",\\"$async\\":true,\\"type\\":\\"object\\",\\"properties\\":{\\"nested\\":{\\"type\\":\\"number\\",\\"minimum\\":2},\\"email\\":{\\"type\\":\\"string\\",\\"format\\":\\"email\\",\\"minLength\\":1},\\"test\\":{\\"type\\":\\"string\\",\\"format\\":\\"uuid\\"},\\"foo\\":{\\"type\\":\\"string\\",\\"format\\":\\"date-time\\"},\\"time\\":{\\"type\\":\\"string\\",\\"format\\":\\"time\\"},\\"binary\\":{\\"type\\":\\"string\\",\\"format\\":\\"binary\\"},\\"url\\":{\\"type\\":\\"string\\",\\"format\\":\\"url\\"},\\"double\\":{\\"type\\":\\"string\\",\\"format\\":\\"double\\"}}};
-const formats0 = /^[a-z0-9!#$%&'*+/=?^_\`{|}~-]+(?:\\\\.[a-z0-9!#$%&'*+/=?^_\`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i;
+const Error0 = import_0.default;
+const schema11 = {"$id":"id","$async":true,"type":"object","properties":{"nested":{"type":"number","minimum":2},"email":{"type":"string","format":"email","minLength":1},"test":{"type":"string","format":"uuid"},"foo":{"type":"string","format":"date-time"},"time":{"type":"string","format":"time"},"binary":{"type":"string","format":"binary"},"url":{"type":"string","format":"url"},"double":{"type":"string","format":"double"}}};
+const formats0 = /^[a-z0-9!#$%&'*+/=?^_\`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_\`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i;
 const formats2 = /^(?:urn:uuid:)?[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i;
-const formats4 = import_1[\\"date-time\\"];
+const formats4 = import_1["date-time"];
 const formats6 = import_1.time;
-const formats8 = /^(?:https?|ftp):\\\\/\\\\/(?:\\\\S+(?::\\\\S*)?@)?(?:(?!(?:10|127)(?:\\\\.\\\\d{1,3}){3})(?!(?:169\\\\.254|192\\\\.168)(?:\\\\.\\\\d{1,3}){2})(?!172\\\\.(?:1[6-9]|2\\\\d|3[0-1])(?:\\\\.\\\\d{1,3}){2})(?:[1-9]\\\\d?|1\\\\d\\\\d|2[01]\\\\d|22[0-3])(?:\\\\.(?:1?\\\\d{1,2}|2[0-4]\\\\d|25[0-5])){2}(?:\\\\.(?:[1-9]\\\\d?|1\\\\d\\\\d|2[0-4]\\\\d|25[0-4]))|(?:(?:[a-z0-9\\\\u{00a1}-\\\\u{ffff}]+-)*[a-z0-9\\\\u{00a1}-\\\\u{ffff}]+)(?:\\\\.(?:[a-z0-9\\\\u{00a1}-\\\\u{ffff}]+-)*[a-z0-9\\\\u{00a1}-\\\\u{ffff}]+)*(?:\\\\.(?:[a-z\\\\u{00a1}-\\\\u{ffff}]{2,})))(?::\\\\d{2,5})?(?:\\\\/[^\\\\s]*)?$/iu;
+const formats8 = /^(?:https?|ftp):\\/\\/(?:\\S+(?::\\S*)?@)?(?:(?!(?:10|127)(?:\\.\\d{1,3}){3})(?!(?:169\\.254|192\\.168)(?:\\.\\d{1,3}){2})(?!172\\.(?:1[6-9]|2\\d|3[0-1])(?:\\.\\d{1,3}){2})(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[1-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z0-9\\u{00a1}-\\u{ffff}]+-)*[a-z0-9\\u{00a1}-\\u{ffff}]+)(?:\\.(?:[a-z0-9\\u{00a1}-\\u{ffff}]+-)*[a-z0-9\\u{00a1}-\\u{ffff}]+)*(?:\\.(?:[a-z\\u{00a1}-\\u{ffff}]{2,})))(?::\\d{2,5})?(?:\\/[^\\s]*)?$/iu;
 const formats10 = import_1.double;
-const func2 = import_2;
+const func2 = import_2.default;
 
-async function validate10(data, {instancePath=\\"\\", parentData, parentDataProperty, rootData=data}={}){
-/*# sourceURL=\\"id\\" */;
+async function validate10(data, {instancePath="", parentData, parentDataProperty, rootData=data}={}){
+/*# sourceURL="id" */;
 let vErrors = null;
 let errors = 0;
 if(errors === 0){
-if(data && typeof data == \\"object\\" && !Array.isArray(data)){
+if(data && typeof data == "object" && !Array.isArray(data)){
 if(data.nested !== undefined){
 let data0 = data.nested;
 const _errs1 = errors;
 if(errors === _errs1){
-if((typeof data0 == \\"number\\") && (isFinite(data0))){
+if((typeof data0 == "number") && (isFinite(data0))){
 if(data0 < 2 || isNaN(data0)){
-throw new Error0([{instancePath:instancePath+\\"/nested\\",schemaPath:\\"#/properties/nested/minimum\\",keyword:\\"minimum\\",params:{comparison: \\">=\\", limit: 2},message:\\"must be >= 2\\"}]);
+throw new Error0([{instancePath:instancePath+"/nested",schemaPath:"#/properties/nested/minimum",keyword:"minimum",params:{comparison: ">=", limit: 2},message:"must be >= 2"}]);
 }
 }
 else {
-throw new Error0([{instancePath:instancePath+\\"/nested\\",schemaPath:\\"#/properties/nested/type\\",keyword:\\"type\\",params:{type: \\"number\\"},message:\\"must be number\\"}]);
+throw new Error0([{instancePath:instancePath+"/nested",schemaPath:"#/properties/nested/type",keyword:"type",params:{type: "number"},message:"must be number"}]);
 }
 }
 var valid0 = _errs1 === errors;
@@ -252,18 +252,18 @@ let data1 = data.email;
 const _errs3 = errors;
 if(errors === _errs3){
 if(errors === _errs3){
-if(typeof data1 === \\"string\\"){
+if(typeof data1 === "string"){
 if(func2(data1) < 1){
-throw new Error0([{instancePath:instancePath+\\"/email\\",schemaPath:\\"#/properties/email/minLength\\",keyword:\\"minLength\\",params:{limit: 1},message:\\"must NOT have fewer than 1 characters\\"}]);
+throw new Error0([{instancePath:instancePath+"/email",schemaPath:"#/properties/email/minLength",keyword:"minLength",params:{limit: 1},message:"must NOT have fewer than 1 characters"}]);
 }
 else {
 if(!(formats0.test(data1))){
-throw new Error0([{instancePath:instancePath+\\"/email\\",schemaPath:\\"#/properties/email/format\\",keyword:\\"format\\",params:{format: \\"email\\"},message:\\"must match format \\\\\\"\\"+\\"email\\"+\\"\\\\\\"\\"}]);
+throw new Error0([{instancePath:instancePath+"/email",schemaPath:"#/properties/email/format",keyword:"format",params:{format: "email"},message:"must match format \\""+"email"+"\\""}]);
 }
 }
 }
 else {
-throw new Error0([{instancePath:instancePath+\\"/email\\",schemaPath:\\"#/properties/email/type\\",keyword:\\"type\\",params:{type: \\"string\\"},message:\\"must be string\\"}]);
+throw new Error0([{instancePath:instancePath+"/email",schemaPath:"#/properties/email/type",keyword:"type",params:{type: "string"},message:"must be string"}]);
 }
 }
 }
@@ -278,13 +278,13 @@ let data2 = data.test;
 const _errs5 = errors;
 if(errors === _errs5){
 if(errors === _errs5){
-if(typeof data2 === \\"string\\"){
+if(typeof data2 === "string"){
 if(!(formats2.test(data2))){
-throw new Error0([{instancePath:instancePath+\\"/test\\",schemaPath:\\"#/properties/test/format\\",keyword:\\"format\\",params:{format: \\"uuid\\"},message:\\"must match format \\\\\\"\\"+\\"uuid\\"+\\"\\\\\\"\\"}]);
+throw new Error0([{instancePath:instancePath+"/test",schemaPath:"#/properties/test/format",keyword:"format",params:{format: "uuid"},message:"must match format \\""+"uuid"+"\\""}]);
 }
 }
 else {
-throw new Error0([{instancePath:instancePath+\\"/test\\",schemaPath:\\"#/properties/test/type\\",keyword:\\"type\\",params:{type: \\"string\\"},message:\\"must be string\\"}]);
+throw new Error0([{instancePath:instancePath+"/test",schemaPath:"#/properties/test/type",keyword:"type",params:{type: "string"},message:"must be string"}]);
 }
 }
 }
@@ -299,13 +299,13 @@ let data3 = data.foo;
 const _errs7 = errors;
 if(errors === _errs7){
 if(errors === _errs7){
-if(typeof data3 === \\"string\\"){
+if(typeof data3 === "string"){
 if(!(formats4.validate(data3))){
-throw new Error0([{instancePath:instancePath+\\"/foo\\",schemaPath:\\"#/properties/foo/format\\",keyword:\\"format\\",params:{format: \\"date-time\\"},message:\\"must match format \\\\\\"\\"+\\"date-time\\"+\\"\\\\\\"\\"}]);
+throw new Error0([{instancePath:instancePath+"/foo",schemaPath:"#/properties/foo/format",keyword:"format",params:{format: "date-time"},message:"must match format \\""+"date-time"+"\\""}]);
 }
 }
 else {
-throw new Error0([{instancePath:instancePath+\\"/foo\\",schemaPath:\\"#/properties/foo/type\\",keyword:\\"type\\",params:{type: \\"string\\"},message:\\"must be string\\"}]);
+throw new Error0([{instancePath:instancePath+"/foo",schemaPath:"#/properties/foo/type",keyword:"type",params:{type: "string"},message:"must be string"}]);
 }
 }
 }
@@ -320,13 +320,13 @@ let data4 = data.time;
 const _errs9 = errors;
 if(errors === _errs9){
 if(errors === _errs9){
-if(typeof data4 === \\"string\\"){
+if(typeof data4 === "string"){
 if(!(formats6.validate(data4))){
-throw new Error0([{instancePath:instancePath+\\"/time\\",schemaPath:\\"#/properties/time/format\\",keyword:\\"format\\",params:{format: \\"time\\"},message:\\"must match format \\\\\\"\\"+\\"time\\"+\\"\\\\\\"\\"}]);
+throw new Error0([{instancePath:instancePath+"/time",schemaPath:"#/properties/time/format",keyword:"format",params:{format: "time"},message:"must match format \\""+"time"+"\\""}]);
 }
 }
 else {
-throw new Error0([{instancePath:instancePath+\\"/time\\",schemaPath:\\"#/properties/time/type\\",keyword:\\"type\\",params:{type: \\"string\\"},message:\\"must be string\\"}]);
+throw new Error0([{instancePath:instancePath+"/time",schemaPath:"#/properties/time/type",keyword:"type",params:{type: "string"},message:"must be string"}]);
 }
 }
 }
@@ -340,8 +340,8 @@ if(data.binary !== undefined){
 const _errs11 = errors;
 if(errors === _errs11){
 if(errors === _errs11){
-if(!(typeof data.binary === \\"string\\")){
-throw new Error0([{instancePath:instancePath+\\"/binary\\",schemaPath:\\"#/properties/binary/type\\",keyword:\\"type\\",params:{type: \\"string\\"},message:\\"must be string\\"}]);
+if(!(typeof data.binary === "string")){
+throw new Error0([{instancePath:instancePath+"/binary",schemaPath:"#/properties/binary/type",keyword:"type",params:{type: "string"},message:"must be string"}]);
 }
 }
 }
@@ -356,13 +356,13 @@ let data6 = data.url;
 const _errs13 = errors;
 if(errors === _errs13){
 if(errors === _errs13){
-if(typeof data6 === \\"string\\"){
+if(typeof data6 === "string"){
 if(!(formats8.test(data6))){
-throw new Error0([{instancePath:instancePath+\\"/url\\",schemaPath:\\"#/properties/url/format\\",keyword:\\"format\\",params:{format: \\"url\\"},message:\\"must match format \\\\\\"\\"+\\"url\\"+\\"\\\\\\"\\"}]);
+throw new Error0([{instancePath:instancePath+"/url",schemaPath:"#/properties/url/format",keyword:"format",params:{format: "url"},message:"must match format \\""+"url"+"\\""}]);
 }
 }
 else {
-throw new Error0([{instancePath:instancePath+\\"/url\\",schemaPath:\\"#/properties/url/type\\",keyword:\\"type\\",params:{type: \\"string\\"},message:\\"must be string\\"}]);
+throw new Error0([{instancePath:instancePath+"/url",schemaPath:"#/properties/url/type",keyword:"type",params:{type: "string"},message:"must be string"}]);
 }
 }
 }
@@ -376,14 +376,14 @@ if(data.double !== undefined){
 let data7 = data.double;
 const _errs15 = errors;
 if(errors === _errs15){
-if((typeof data7 == \\"number\\") && (isFinite(data7))){
+if((typeof data7 == "number") && (isFinite(data7))){
 if(!(formats10.validate(data7))){
-throw new Error0([{instancePath:instancePath+\\"/double\\",schemaPath:\\"#/properties/double/format\\",keyword:\\"format\\",params:{format: \\"double\\"},message:\\"must match format \\\\\\"\\"+\\"double\\"+\\"\\\\\\"\\"}]);
+throw new Error0([{instancePath:instancePath+"/double",schemaPath:"#/properties/double/format",keyword:"format",params:{format: "double"},message:"must match format \\""+"double"+"\\""}]);
 }
 }
 if(errors === _errs15){
-if(!(typeof data7 === \\"string\\")){
-throw new Error0([{instancePath:instancePath+\\"/double\\",schemaPath:\\"#/properties/double/type\\",keyword:\\"type\\",params:{type: \\"string\\"},message:\\"must be string\\"}]);
+if(!(typeof data7 === "string")){
+throw new Error0([{instancePath:instancePath+"/double",schemaPath:"#/properties/double/type",keyword:"type",params:{type: "string"},message:"must be string"}]);
 }
 }
 }
@@ -401,7 +401,7 @@ var valid0 = true;
 }
 }
 else {
-throw new Error0([{instancePath,schemaPath:\\"#/type\\",keyword:\\"type\\",params:{type: \\"object\\"},message:\\"must be object\\"}]);
+throw new Error0([{instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"},message:"must be object"}]);
 }
 }
 if(errors === 0){
