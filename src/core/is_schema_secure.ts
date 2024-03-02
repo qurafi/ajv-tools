@@ -38,7 +38,7 @@ export function warnAboutInsecure(file: string, export_name: string) {
     });
 }
 
-export function checkForSchemaSecuriry(schema: any, file: string, export_name: string) {
+export function checkForSchemaSecurity(schema: any, file: string, export_name: string) {
     if (!isSchemaSecure(schema)) {
         warnAboutInsecure(file, export_name);
 

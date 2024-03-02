@@ -7,7 +7,7 @@ import rfdc from "rfdc";
 import { transformCJS } from "../utils/code/cjs_to_esm.js";
 import { createDebug, logger, removeSchemaFileExt } from "../utils/index.js";
 import { AjvCompileOptions, schema_opts } from "./ajv_options.js";
-import { checkForSchemaSecuriry } from "./is_schema_secure.js";
+import { checkForSchemaSecurity } from "./is_schema_secure.js";
 import addAjvKeywords from "ajv-keywords";
 
 const clone = rfdc();
@@ -124,7 +124,7 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
             // store original
             (schema[meta_prop] ??= {}).raw_schema = raw_schema;
 
-            checkForSchemaSecuriry(schema_clone, file, export_name);
+            checkForSchemaSecurity(schema_clone, file, export_name);
 
             addSchema(schema_clone, ref);
             file_schemas.set(export_name, schema);
@@ -142,15 +142,29 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
             return;
         }
 
+        let export_schema_code = "";
+        const seen = new Set<string>();
+
         const refs = Array.from(file_schemas, ([ref]) => {
-            return [ref, resolveSchemaRef(file, ref)];
+            const ajv_key = resolveSchemaRef(file, ref);
+            const fn = ajv.getSchema(ajv_key);
+            const schemaInScope = fn?.source?.scopeValues.schema;
+            if (schemaInScope) {
+                schemaInScope.forEach((scope) => {
+                    if (scope.value?.ref === fn.schema) {
+                        seen.add(scope.str);
+                        export_schema_code += `\n${fn.name}.schema = ${scope.str};`;
+                    }
+                });
+            }
+            return [ref, ajv_key];
         });
 
         const code = generateAjvStandaloneCode(ajv, Object.fromEntries(refs))
             .replace("export const default =", "export default")
             .replace('"use strict";', "");
 
-        return transformCJS(code, interop);
+        return transformCJS(code + export_schema_code, interop);
     }
 
     /** Generate a schema validation code */
@@ -274,7 +288,7 @@ export const ajvOptionsServer: AjvOptions = {
     coerceTypes: true,
 };
 
-/** optmized for size */
+/** optmized for output size */
 export const ajvOptionsClient: AjvOptions = {
     allErrors: true,
     removeAdditional: true,
