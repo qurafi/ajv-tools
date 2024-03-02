@@ -22,9 +22,7 @@ suite("ajv options per schema", async () => {
     });
     await Promise.all(promises);
 
-    // console.log([...store.files.keys()], ajv.schemas);
-
-    it("should respect invidual schema options: allErrors", () => {
+    it("should respect individual schema options: allErrors", () => {
         const single_errors = ajv.getSchema("file://s/errors/single_error.json");
         const multiple_errors = ajv.getSchema("file://s/errors/multiple_errors.json");
         const default_error = ajv.getSchema("file://s/errors/default.json");
@@ -41,7 +39,7 @@ suite("ajv options per schema", async () => {
         expect(multiple_errors?.errors).toHaveLength(2);
     });
 
-    it("should respect invidual schema options: coerceTypes", async () => {
+    it("should respect individual schema options: coerceTypes", async () => {
         const schemas_entries = ["a", "b", "c", "d"].map((v) => {
             return [v, ajv.getSchema(`file://s/coerceTypes/${v}.json`)];
         });
@@ -77,9 +75,7 @@ suite("ajv options per schema", async () => {
 
         const module = await import(tmp_path);
         const validate = module.validate;
-        // unlinkSync(tmp_path);
 
-        // console.log(module);
         validate!({
             a: {
                 foo: "string",
@@ -88,10 +84,6 @@ suite("ajv options per schema", async () => {
             b: 1,
             c: true,
         });
-
-        // console.log(ref2a);
-
-        // console.log(validate?.errors);
     });
 });
 

@@ -6,7 +6,7 @@ import fs, { mkdirSync } from "fs";
 import { setTimeout } from "timers/promises";
 
 describe("vite hot reloading schemas", async () => {
-    //TODO a seperate fixtures path for hmr
+    //TODO a separate fixtures path for hmr
     const fixtures_tmp = resolveFixturePath("tmp-vite-simple-app-hmr");
     const fixtures_src = resolveFixturePath("vite-simple-app");
 

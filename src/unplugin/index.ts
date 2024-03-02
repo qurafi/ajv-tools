@@ -119,7 +119,7 @@ export default createUnplugin((config: PluginOptions) => {
                     debug({ code });
                     return code;
                 } else {
-                    throw new Error(`${t} unkown option for t param`);
+                    throw new Error(`${t} unknown option for t param`);
                 }
             }
 
@@ -168,7 +168,7 @@ export default createUnplugin((config: PluginOptions) => {
                 return raw_code_if(code, raw_code);
             }
 
-            throw new Error(`Could not resovle schema import ${raw_id}`);
+            throw new Error(`Could not resolve schema import ${raw_id}`);
         },
 
         vite: {

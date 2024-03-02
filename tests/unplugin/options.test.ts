@@ -9,7 +9,6 @@ describe("handling schema options", async () => {
     async function testErrors(single: boolean, mod?: string) {
         const schema = mod ?? single ? "single_error" : "multiple_errors";
         const m = await server.ssrLoadModule(`$schemas/schemas/${schema}`);
-        console.log({ schema, m });
         const validate = m.default;
 
         // invalid data
@@ -23,7 +22,6 @@ describe("handling schema options", async () => {
         };
         validate!(data);
 
-        console.log(data, validate.errors);
         expect(validate.errors?.length >= (single ? 1 : 2)).toBe(true);
     }
 

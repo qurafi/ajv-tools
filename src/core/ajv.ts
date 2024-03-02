@@ -280,7 +280,7 @@ export const enforcedAjvOptions: AjvOptions = {
     logger: logger,
 };
 
-/** server options optmized for speed */
+/** server options optimized for speed */
 export const ajvOptionsServer: AjvOptions = {
     allErrors: true,
     removeAdditional: true,
@@ -288,7 +288,7 @@ export const ajvOptionsServer: AjvOptions = {
     coerceTypes: true,
 };
 
-/** optmized for output size */
+/** optimized for output size */
 export const ajvOptionsClient: AjvOptions = {
     allErrors: true,
     removeAdditional: true,

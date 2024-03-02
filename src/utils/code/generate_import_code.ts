@@ -1,5 +1,3 @@
-// type MapImport = (ref: string) => string;
-
 const json = JSON.stringify;
 
 export function generateDynamicImportsCode(

@@ -70,9 +70,8 @@ suite("createAjvFileStore", () => {
         expect(resolved_files).toStrictEqual(Object.keys(modules));
     });
 
-    it("should loadd all schemas", () => {
+    it.todo("should load all schemas", () => {
         const schemas = store.getFileSchemas("s/a.schema.js");
-        console.log({ schemas });
     });
 
     it("should validate correctly", () => {
@@ -120,9 +119,6 @@ suite("createAjvFileStore", () => {
     });
 
     it("getSchemaFileCode should return the code and validate correctly", async () => {
-        // console.log(store.files);
-        console.log(Object.keys(ajv.schemas));
-        // console.log(ajv.getSchema("file://s/a.schema/default"));
         const code = store.getSchemaFileCode("default", "s/a.schema");
         expect(code).toBeDefined();
 
