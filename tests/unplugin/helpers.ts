@@ -3,9 +3,10 @@ import { InlineConfig, createServer } from "vite";
 import unpluginAjv, { PluginOptions } from "../../src/unplugin";
 import { readFile, writeFile } from "fs/promises";
 import { setTimeout } from "timers/promises";
+import { mkdirSync } from "fs-extra";
 
 export function resolveFixturePath(fixture: string) {
-    return path.resolve(__dirname, `../fixtures/${fixture}`);
+    return path.resolve(__dirname, `../fixtures/`, fixture);
 }
 
 export async function setupVite(opts: {
@@ -16,20 +17,23 @@ export async function setupVite(opts: {
 }) {
     const fixtures = resolveFixturePath(opts.fixture);
 
+    mkdirSync(fixtures, { recursive: true });
+
     opts.viteOptions = {
         root: fixtures,
         configFile: false,
         plugins: [],
         clearScreen: false,
+        logLevel: "silent",
         ...opts.viteOptions,
     };
 
     opts.viteOptions.plugins?.push(
         unpluginAjv.vite({
             include: [
-                // ?(d.)
-                "./src/routes/**/schema.{?(d.)ts,js}",
-                "./src/schemas/**/*.{?(d.)ts,js}",
+                //
+                "src/routes/**/schema.{?(d.)ts,js}",
+                "src/schemas/**/*.{?(d.)ts,js}",
             ],
             // TODO WIP d.ts loader
             exclude: ["**/*.d.ts"],
