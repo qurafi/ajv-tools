@@ -67,10 +67,6 @@ describe("importing schemas", async () => {
         const module = await server.ssrLoadModule("$schemas?t=ids");
     });
 
-    it.todo("should import routes schemas", async () => {
-        const module = await server.ssrLoadModule("$schemas?t=routes");
-    });
-
     function validateDefaultExport(default_export: any) {
         const validate = default_export?.default;
         expect(Object.keys(default_export)).toEqual(["default", "named"]);
@@ -81,6 +77,15 @@ describe("importing schemas", async () => {
     }
 
     it("should import by specific path", async () => {
+        const module = await server.ssrLoadModule("$schemas/schemas/export_schema");
+        const source = await server.ssrLoadModule("src/schemas/export_schema");
+        for (const [name, fn] of Object.entries(module)) {
+            const original = source[name];
+            expect(fn.schema).toEqual(original);
+        }
+    });
+
+    it("each validation function should have schema property", async () => {
         const module = await server.ssrLoadModule("$schemas/schemas/default_export");
         validateDefaultExport(module);
     });
@@ -129,7 +134,7 @@ describe("importing schemas", async () => {
         });
     });
 
-    //TODO move it to a seperate test
+    //TODO move it to a separate test
     async function testClientBuilds(invalid: boolean) {
         const browser = await puppeteer.launch({
             headless: "new",
@@ -140,7 +145,6 @@ describe("importing schemas", async () => {
         await page.goto(url + (invalid ? "index_invalid.html" : ""));
 
         const json = await page.$eval("body", (body) => body.textContent);
-        console.log(json);
         expect(json).toBeDefined();
         expect((json?.trim().length ?? 0) > 2).toBe(!invalid);
         if (!invalid) {
@@ -152,7 +156,7 @@ describe("importing schemas", async () => {
         }
     }
 
-    it("importing raw json schema shuold not have $$meta props", async () => {
+    it("importing raw json schema should not have $$meta props", async () => {
         await testClientBuilds(false);
     });
 
