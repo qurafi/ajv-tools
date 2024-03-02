@@ -151,6 +151,7 @@ describe("plugins.ts", async () => {
     function testConcurrent(concurrent: boolean) {
         it(
             `should invoke concurrently when concurrent is ${concurrent}`,
+            { retry: 3 },
             async () => {
                 const { container } = await setupContainer();
                 const start = Date.now();
@@ -167,10 +168,8 @@ describe("plugins.ts", async () => {
                 const expected = concurrent ? timeout_duration : timeout_duration * 3;
 
                 const e = process.env.CI ? 100 : 15;
-                console.log({ elapsed });
                 expect(elapsed >= expected - e && elapsed <= expected + e).toBe(true);
-            },
-            { retry: 3 }
+            }
         );
     }
 

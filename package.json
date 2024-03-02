@@ -2,9 +2,9 @@
     "name": "ajv-build-tools",
     "description": "A tool to manage compiling json schemas with ajv to integrate with build tools like rollup and vite",
     "version": "1.0.0-next.6",
-    "main": "./dist/index.js",
-    "module": "./dist/index.mjs",
+    "module": "./dist/index.js",
     "types": "./dist/index.d.ts",
+    "type": "module",
     "keywords": [
         "ajv",
         "jsonschema",
@@ -23,17 +23,15 @@
         ".": {
             "types": "./dist/index.d.ts",
             "require": "./dist/index.js",
-            "import": "./dist/index.mjs"
+            "import": "./dist/index.js"
         },
         "./unplugin": {
             "types": "./dist/unplugin/index.d.ts",
-            "require": "./dist/unplugin/index.js",
-            "import": "./dist/unplugin/index.mjs"
+            "import": "./dist/unplugin/index.js"
         },
         "./core": {
             "types": "./dist/core/index.d.ts",
-            "require": "./dist/core/index.js",
-            "import": "./dist/core/index.mjs"
+            "import": "./dist/core/index.js"
         },
         "./types": {
             "types": "./types/index.d.ts"
@@ -41,7 +39,6 @@
     },
     "files": [
         "dist",
-        "*.d.ts",
         "types/*.d.ts",
         "README.md",
         "LICENSE"
@@ -49,7 +46,7 @@
     "scripts": {
         "test": "DEBUG_COLORS=1 vitest",
         "test:ci": "vitest",
-        "build": "tsup 'src/**/index.ts' --format esm,cjs --dts --sourcemap --shims --no-splitting",
+        "build": "tsup 'src/**/index.ts' --format esm --dts --sourcemap --shims --no-splitting",
         "format": "prettier -w src/**/*.ts",
         "lint": "eslint . --ignore-path .gitignore --ignore-pattern test/fixture",
         "dev": "npm run build -- --watch",
@@ -87,8 +84,8 @@
         "puppeteer": "^20.2.0",
         "tsup": "^6.7.0",
         "typescript": "^5.0.3",
-        "vite": "^4.3.2",
-        "vitest": "^0.29.7"
+        "vite": "^5.1.4",
+        "vitest": "^1.3.1"
     },
     "packageManager": "pnpm@8.2.0"
 }

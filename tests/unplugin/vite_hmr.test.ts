@@ -1,12 +1,17 @@
-import { afterAll, beforeEach, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, beforeEach, describe, expect, it, test } from "vitest";
 import { editFile, poll, resolveFixturePath, setupVite } from "./helpers";
 import path from "path";
 import fse from "fs-extra";
+import fs, { mkdirSync } from "fs";
+import { setTimeout } from "timers/promises";
 
 describe("vite hot reloading schemas", async () => {
     //TODO a seperate fixtures path for hmr
     const fixtures_tmp = resolveFixturePath("tmp-vite-simple-app-hmr");
     const fixtures_src = resolveFixturePath("vite-simple-app");
+
+    fs.rmSync(fixtures_tmp, { recursive: true, force: true });
+    fs.cpSync(fixtures_src, fixtures_tmp, { recursive: true });
 
     const { server, src } = await setupVite({
         fixture: fixtures_tmp,
@@ -15,27 +20,26 @@ describe("vite hot reloading schemas", async () => {
         },
     });
 
-    beforeEach(async () => {
-        await fse.remove(fixtures_tmp);
-        await fse.copy(fixtures_src, fixtures_tmp);
-    });
-
     afterAll(async () => {
-        await fse.remove(fixtures_tmp);
+        fs.rmSync(fixtures_tmp, { recursive: true, force: true });
+        await server.close();
     });
 
     it(
         "update module graph when a schema file is updated",
+        { timeout: 5200 },
         async () => {
             async function test_importer(changed = false) {
                 const default_export = "schemas/default_export";
-                const m = (await server.ssrLoadModule("./src/importer-all")).default;
-                expect(m).toHaveProperty(default_export);
+                const mod = await server.ssrLoadModule("./src/importer-all");
+                const m = mod.default;
                 const schemas = await m[default_export]?.();
-                expect(schemas).toBeDefined();
                 const named = changed ? "named_changed" : "named";
-                expect(Object.keys(schemas)).toEqual(["default", named]);
                 const validate = schemas[named];
+
+                expect(m).toHaveProperty(default_export);
+                expect(schemas).toBeDefined();
+                expect(Object.keys(schemas)).toEqual(["default", named]);
                 expect(validate(1)).toBe(true);
                 expect(validate("invalid")).toBe(false);
                 expect(validate()).toBe(false);
@@ -57,9 +61,8 @@ describe("vite hot reloading schemas", async () => {
             });
 
             await test_importer(true);
-        },
-        { timeout: 5200, retry: 2 }
+        }
     );
 
-    it.todo("should reload current schema modules when schema global id changes");
+    it.todo("should reload current schema modules when schema with global id changes");
 });
