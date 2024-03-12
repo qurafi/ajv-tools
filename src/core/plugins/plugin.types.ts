@@ -1,11 +1,12 @@
-import { ResolvedConfig, SchemaBuilder, UpdateType } from "../../index.js";
+import type { ResolvedConfig, SchemaBuilder, UpdateType } from "../../index.js";
+import type { ResolveModule, ResolveSchema } from "../ajv.js";
 
 export interface SchemaBuilderHooks {
     /** after resolving config and everything is ready */
-    init(context: { config: ResolvedConfig; builder: SchemaBuilder }): void;
+    init(ctx: { config: ResolvedConfig; builder: SchemaBuilder }): void;
 
     /** When file change handled */
-    onFile(context: {
+    onFile(ctx: {
         builder: SchemaBuilder;
 
         config: ResolvedConfig;
@@ -22,8 +23,9 @@ export interface SchemaBuilderHooks {
         // schemas: Record<string, any>;
     }): void;
 
-    resolveModule(module: Record<string, any>, file: string): Record<string, any>;
-    resolveSchema(schema: any, file: string, name: string): Record<string, any>;
+    resolveModule: ResolveModule;
+
+    resolveSchema: ResolveSchema;
 
     buildEnd(builder: SchemaBuilder): void;
 }

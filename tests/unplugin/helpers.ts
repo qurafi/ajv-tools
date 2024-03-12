@@ -1,6 +1,6 @@
 import path from "path";
-import { InlineConfig, createServer } from "vite";
-import unpluginAjv, { PluginOptions } from "../../src/unplugin";
+import { type InlineConfig, createServer } from "vite";
+import unpluginAjv, { type PluginOptions } from "../../src/unplugin";
 import { readFile, writeFile } from "fs/promises";
 import { setTimeout } from "timers/promises";
 import { mkdirSync } from "fs-extra";
@@ -42,7 +42,7 @@ export async function setupVite(opts: {
                 {
                     resolveModule(module, file) {
                         if (file == "schemas/custom_resolver.ts") {
-                            return module.default;
+                            return module.default as any;
                         }
                         return module;
                     },

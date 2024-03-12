@@ -1,9 +1,9 @@
 import { createUnplugin } from "unplugin";
-import { ViteDevServer } from "vite";
+import type { ViteDevServer } from "vite";
 import {
     createSchemaBuilder,
-    SchemaBuilder,
-    SchemaBuilderOptions,
+    type SchemaBuilder,
+    type SchemaBuilderOptions,
 } from "../core/index.js";
 import { generateDynamicImportsCode } from "../utils/code/generate_import_code.js";
 import { createDebug, parseQueries, removeSchemaFileExt } from "../utils/index.js";

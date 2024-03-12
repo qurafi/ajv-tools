@@ -6,7 +6,7 @@ import generateAjvStandaloneCode from "ajv/dist/standalone/index.js";
 import rfdc from "rfdc";
 import { transformCJS } from "../utils/code/cjs_to_esm.js";
 import { createDebug, logger, removeSchemaFileExt } from "../utils/index.js";
-import { AjvCompileOptions, schema_opts } from "./ajv_options.js";
+import { type AjvCompileOptions, schema_opts } from "./ajv_options.js";
 import { checkForSchemaSecurity } from "./is_schema_secure.js";
 import addAjvKeywords from "ajv-keywords";
 
@@ -14,10 +14,21 @@ const clone = rfdc();
 
 const debug = createDebug("files");
 
+export type ResolveModule = (
+    module: Record<string, unknown>,
+    file: string
+) => Record<string, any> | false | undefined;
+
+export type ResolveSchema = (
+    schema: any,
+    source: string,
+    name: string
+) => Record<string, any> | false | undefined;
+
 export interface AjvFilesStoreOptions {
     ajvInstances: Record<string, Ajv>;
-    resolveModule?(module: Record<string, unknown>, file: string): Record<string, any>;
-    resolveSchema?(schema: any, source: string, name: string): any;
+    resolveModule?: ResolveModule;
+    resolveSchema?: ResolveSchema;
 }
 
 export interface SchemaMeta {
@@ -83,6 +94,10 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
 
     async function loadFileSchemas(file: string, module: Record<string, unknown>) {
         const schemas = await resolveModule(module, file);
+        if (typeof schemas !== "object") {
+            return;
+        }
+
         debug("loadFileSchemas", schemas);
         const schemas_entries = Object.entries(schemas);
 
@@ -99,12 +114,11 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
         for (const [export_name, raw_schema] of schemas_entries) {
             const schema = await resolveSchema(clone(raw_schema), file, export_name);
 
-            if (schema == undefined) {
+            if (!schema) {
                 continue;
             }
 
             if (typeof schema != "object") {
-                // idk why ajv allows boolean as schemas?
                 throw new TypeError("Schema must be object");
             }
 

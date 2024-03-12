@@ -1,7 +1,7 @@
 import {
     default as Ajv,
-    Options as AjvOptions,
-    InstanceOptions as AjvInstanceOptions,
+    type Options as AjvOptions,
+    type InstanceOptions as AjvInstanceOptions,
 } from "ajv";
 import { createRequire } from "module";
 import { SchemaEnv } from "ajv/dist/compile";

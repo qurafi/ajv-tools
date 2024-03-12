@@ -1,7 +1,7 @@
 import { afterAll, describe, expect, it } from "vitest";
 import { setupVite } from "./helpers";
 import puppeteer from "puppeteer";
-import { ErrorObject } from "ajv";
+import { type ErrorObject } from "ajv";
 
 describe("importing schemas", async () => {
     const global_schemas = [
@@ -137,7 +137,7 @@ describe("importing schemas", async () => {
     //TODO move it to a separate test
     async function testClientBuilds(invalid: boolean) {
         const browser = await puppeteer.launch({
-            headless: "new",
+            headless: true,
         });
 
         const page = await browser.newPage();

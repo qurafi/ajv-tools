@@ -2,7 +2,7 @@ import Ajv from "ajv";
 import addFormat from "ajv-formats";
 import standaloneCode from "ajv/dist/standalone";
 import path from "node:path";
-import { createServer, Plugin } from "vite";
+import { createServer, type Plugin } from "vite";
 import { expect, suite, test } from "vitest";
 import { transformCJS } from "./cjs_to_esm";
 
@@ -55,7 +55,8 @@ async function createAjvViteInstance() {
                 const code = standaloneCode(ajv, ajv.getSchema("id"));
 
                 if (id == valid_import_id) {
-                    return transformCJS(code, true);
+                    const transformed = transformCJS(code, true);
+                    return transformed;
                 }
 
                 return code;

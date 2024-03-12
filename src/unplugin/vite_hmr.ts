@@ -1,5 +1,5 @@
-import { ViteDevServer } from "vite";
-import { Plugin, SchemaBuilder } from "../core";
+import type { ViteDevServer } from "vite";
+import type { Plugin, SchemaBuilder } from "../core";
 import { removeSchemaFileExt } from "../utils";
 
 export default function viteHmrBuilderPlugin(server: ViteDevServer): Plugin {
@@ -9,6 +9,9 @@ export default function viteHmrBuilderPlugin(server: ViteDevServer): Plugin {
             schema_builder = context.builder;
         },
         onFile: async ({ relativePath, file: absolutePath, initial }) => {
+            if (initial) {
+                return;
+            }
             const file = removeSchemaFileExt(relativePath);
 
             const modules = server.moduleGraph.getModulesByFile(absolutePath);

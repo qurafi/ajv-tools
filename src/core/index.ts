@@ -12,9 +12,9 @@ import {
     enforcedAjvOptions,
     initInstances,
 } from "./ajv";
-import { defaultModuleLoader, ModuleLoader } from "./loader";
+import { defaultModuleLoader, type ModuleLoader } from "./loader";
 import chokidar from "chokidar";
-import { Plugin } from "./plugins/plugin.types";
+import type { Plugin } from "./plugins/plugin.types";
 import { createPluginContainer } from "./plugins/plugins.js";
 
 const debug = createDebug("core");
@@ -95,11 +95,13 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
     async function handleFileUpdate(type: UpdateType, _file: string, initial = false) {
         const file = posixify(path.resolve(root_base, _file));
         const relative_path = posixify(path.relative(root_base, file));
-        debug_build(`${type}: ${relative_path}`);
 
         if (!isSchemaFile(_file)) {
+            debug_build("not schema file", relative_path);
             return;
         }
+
+        debug_build(`${type}: ${relative_path}`);
 
         if (type == "remove") {
             schema_files.removeFileSchemas(relative_path);
@@ -132,7 +134,7 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
 
         return micromatch.isMatch(path.isAbsolute(file) ? file : relative, include, {
             cwd: root_,
-            // ignore: exclude,
+            ignore: exclude,
         });
     }
 
@@ -227,4 +229,4 @@ export type ResolvedConfig = ReturnType<typeof resolveConfig>;
 
 export type SchemaBuilder = Awaited<ReturnType<typeof createSchemaBuilder>>;
 
-export { Plugin };
+export type { Plugin };

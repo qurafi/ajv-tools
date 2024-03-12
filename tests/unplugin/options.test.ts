@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { setupVite } from "./helpers";
-import { ValidateFunction } from "ajv";
+import type { ValidateFunction } from "ajv";
 
 describe("handling schema options", async () => {
     const { server } = await setupVite({ fixture: "vite-simple-app" });

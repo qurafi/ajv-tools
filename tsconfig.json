@@ -14,7 +14,8 @@
         "declarationMap": true,
         "noUnusedLocals": false,
         "noUnusedParameters": false,
-        "noEmit": true
+        "noEmit": true,
+        "verbatimModuleSyntax": true
     },
     "include": ["src", "*.d.ts", "types/*.d.ts", "tests"],
     "exclude": ["dist", "tests/fixtures"]
