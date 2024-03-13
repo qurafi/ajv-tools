@@ -1,4 +1,4 @@
-import { UnstrictParameters, UnstrictReturnType } from "../../utils/index.js";
+import type { UnstrictParameters, UnstrictReturnType } from "../../utils/index.js";
 
 interface InvokeOptions<T, A extends keyof T> {
     action: A;
