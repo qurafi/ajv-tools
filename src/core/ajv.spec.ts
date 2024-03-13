@@ -47,8 +47,6 @@ suite("createAjvFileStore", () => {
             return module;
         },
         resolveSchema(schema) {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
             schema[resolved_symbol] = true;
             return schema;
         },
