@@ -7,6 +7,7 @@ import rfdc from "rfdc";
 import { transformCJS } from "../utils/code/cjs_to_esm.js";
 import {
     createDebug,
+    isObject,
     logger,
     removeSchemaFileExt,
     type MaybePromise,
@@ -105,12 +106,16 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
 
     async function loadFileSchemas(file: string, module: Record<string, unknown>) {
         const schemas = await resolveModule(module, file);
-        if (typeof schemas !== "object") {
-            return;
+        if (schemas === false) {
+            return; // skip
+        }
+
+        if (schemas && !isObject(schemas)) {
+            throw new TypeError(`resolveModule of ${file} returned non object value`);
         }
 
         debug("loadFileSchemas", schemas);
-        const schemas_entries = Object.entries(schemas);
+        const schemas_entries = Object.entries(schemas!);
 
         if (schemas_entries.length === 0) {
             logger.warn(`${file}: does not export any schema`);
@@ -129,8 +134,7 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
                 continue;
             }
 
-            // check object, non null, non array
-            if (typeof schema != "object") {
+            if (!isObject(schema)) {
                 throw new TypeError(
                     `Schema ${export_name} must be object, got ${typeof schema}`
                 );

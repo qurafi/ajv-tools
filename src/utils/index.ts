@@ -50,3 +50,7 @@ export const logger = {
 export function posixify(str: string) {
     return str.replace(/\\/g, "/");
 }
+
+export function isObject(x: unknown): x is Record<string, any> {
+    return !!x && typeof x == "object" && !Array.isArray(x);
+}
