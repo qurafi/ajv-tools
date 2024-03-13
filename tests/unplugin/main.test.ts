@@ -236,8 +236,14 @@ describe("importing schemas", async () => {
 
     it("custom resolver", async () => {
         const mod = await server.ssrLoadModule("$schemas/schemas/custom_resolver");
-        expect(mod.default).toBe(undefined);
-        expect(mod.schema).toBeDefined();
+        expect(mod.default).toBeUndefined();
+        expect(mod.schema).toBeTypeOf("function");
+        expect(mod.schema.schema).toMatchObject({ type: "string" });
+        expect(mod.skipped_by_resolver).toBeUndefined();
+        expect(mod.transformed_resolved.schema).toMatchObject({
+            type: "object",
+            title: "transformed",
+        });
     });
 
     afterAll(async () => {

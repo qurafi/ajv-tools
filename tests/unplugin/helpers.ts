@@ -42,15 +42,28 @@ export async function setupVite(opts: {
                 {
                     resolveModule(module, file) {
                         if (file == "schemas/custom_resolver.ts") {
+                            // all .default properties will be treated as schema, other exports will be ignored
                             return module.default as any;
                         }
                         return module;
                     },
-                    resolveSchema(schema, file) {
+                    transformSchema(schema, file, name) {
                         if (file == "schemas/custom_resolver.ts") {
-                            return schema();
+                            if (name == "schema") {
+                                return schema();
+                            } else if (name == "transformed_resolved") {
+                                return { title: "transformed" };
+                            }
                         }
-                        return schema;
+                    },
+                    resolveSchema(schema, file, name) {
+                        if (file == "schemas/custom_resolver.ts") {
+                            if (name == "skipped_by_resolver") {
+                                return false;
+                            } else if (name == "transformed_resolved") {
+                                return { type: "object", ...schema };
+                            }
+                        }
                     },
                 },
                 ...(opts.pluginOptions?.plugins ?? []),
@@ -77,6 +90,7 @@ export async function editFile(file: string, edit: (content: string) => string) 
 }
 
 type MaybePromise<T> = T | Promise<T>;
+
 export async function poll(tries: number, wait_time = 0, fn: () => MaybePromise<any>) {
     const interval = wait_time > 0 ? wait_time / tries : 25;
     for (let i = 0; i < tries; i++) {

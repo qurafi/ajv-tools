@@ -5,7 +5,12 @@ import addFormats from "ajv-formats";
 import generateAjvStandaloneCode from "ajv/dist/standalone/index.js";
 import rfdc from "rfdc";
 import { transformCJS } from "../utils/code/cjs_to_esm.js";
-import { createDebug, logger, removeSchemaFileExt } from "../utils/index.js";
+import {
+    createDebug,
+    logger,
+    removeSchemaFileExt,
+    type MaybePromise,
+} from "../utils/index.js";
 import { type AjvCompileOptions, schema_opts } from "./ajv_options.js";
 import { checkForSchemaSecurity } from "./is_schema_secure.js";
 import addAjvKeywords from "ajv-keywords";
@@ -17,13 +22,19 @@ const debug = createDebug("files");
 export type ResolveModule = (
     module: Record<string, unknown>,
     file: string
-) => Record<string, any> | false | undefined;
+) => MaybePromise<Record<string, any> | false | undefined>;
 
+/**
+ * Called after {@linkcode TransformSchema}
+ *
+ * Takes the schema after transformation and outputs JSON Schema
+ *
+ */
 export type ResolveSchema = (
     schema: any,
     source: string,
     name: string
-) => Record<string, any> | false | undefined;
+) => MaybePromise<Record<string, any> | false | undefined>;
 
 export interface AjvFilesStoreOptions {
     ajvInstances: Record<string, Ajv>;
@@ -53,7 +64,7 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
 
     const default_instance = instance_entries[0]?.[1];
     if (!default_instance) {
-        throw new Error("expecting at least on ajv instance");
+        throw new Error("expecting at least one ajv instance");
     }
 
     function getFileSchemas(file: string) {
@@ -118,8 +129,11 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
                 continue;
             }
 
+            // check object, non null, non array
             if (typeof schema != "object") {
-                throw new TypeError("Schema must be object");
+                throw new TypeError(
+                    `Schema ${export_name} must be object, got ${typeof schema}`
+                );
             }
 
             const ref = resolveSchemaRef(file, export_name);

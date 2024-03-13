@@ -70,13 +70,21 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
             return resolved ?? mod;
         },
         async resolveSchema(schema, file, name) {
-            const resolved = await plugins.transformFirst(
-                "resolveSchema",
+            const transformed = await plugins.transformFirst(
+                "transformSchema",
                 schema,
                 file,
                 name
             );
-            return resolved ?? schema;
+
+            const resolved = await plugins.transformFirst(
+                "resolveSchema",
+                transformed ?? schema,
+                file,
+                name
+            );
+
+            return resolved ?? transformed ?? schema;
         },
     });
 
@@ -168,7 +176,7 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
     }
 
     async function writeFiles(files: string[], outDir: string) {
-        //TODO
+        //TODO we focusing on vite for now
         throw new Error("not implemented yet");
     }
 

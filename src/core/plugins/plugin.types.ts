@@ -1,6 +1,15 @@
 import type { ResolvedConfig, SchemaBuilder, UpdateType } from "../../index.js";
 import type { ResolveModule, ResolveSchema } from "../ajv.js";
 
+/**
+ * Transform other schema formats to JSON Schema
+ *
+ * Called before {@linkcode TransformSchema}
+ *
+ * Return `null` to pass to the next transformer
+ */
+export type TransformSchema = ResolveSchema;
+
 export interface SchemaBuilderHooks {
     /** after resolving config and everything is ready */
     init(ctx: { config: ResolvedConfig; builder: SchemaBuilder }): void;
@@ -24,6 +33,8 @@ export interface SchemaBuilderHooks {
     }): void;
 
     resolveModule: ResolveModule;
+
+    transformSchema: ResolveSchema;
 
     resolveSchema: ResolveSchema;
 
