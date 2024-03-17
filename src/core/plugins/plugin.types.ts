@@ -1,5 +1,5 @@
 import type { ResolvedConfig, SchemaBuilder, UpdateType } from "../../index.js";
-import type { ResolveModule, ResolveSchema } from "../ajv.js";
+import type { ResolveModule, ResolveSchema, TransformCode } from "../ajv.js";
 
 /**
  * Transform other schema formats to JSON Schema
@@ -37,6 +37,8 @@ export interface SchemaBuilderHooks {
     transformSchema: ResolveSchema;
 
     resolveSchema: ResolveSchema;
+
+    transformCode: TransformCode;
 
     buildEnd(builder: SchemaBuilder): void;
 }

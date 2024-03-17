@@ -37,10 +37,16 @@ export type ResolveSchema = (
     name: string
 ) => MaybePromise<Record<string, any> | false | undefined>;
 
+export type TransformCode = (
+    code: string,
+    instance: string
+) => MaybePromise<string | undefined>;
+
 export interface AjvFilesStoreOptions {
     ajvInstances: Record<string, Ajv>;
     resolveModule?: ResolveModule;
     resolveSchema?: ResolveSchema;
+    transformCode?: TransformCode;
 }
 
 export interface SchemaMeta {
@@ -53,6 +59,7 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
         ajvInstances: instances,
         resolveSchema = (schema) => schema,
         resolveModule = (mod) => mod,
+        transformCode = (code) => code,
     } = opts;
 
     const id_key = "$id";
@@ -70,6 +77,11 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
 
     function getFileSchemas(file: string) {
         return files.get(removeSchemaFileExt(file));
+    }
+
+    async function transformSchemaCode(code: string, instance: string, interop = false) {
+        const init_code = transformCJS(code, interop);
+        return (await transformCode(init_code, instance)) ?? init_code;
     }
 
     // multiple instances so we can have different options for the server and the client
@@ -196,11 +208,11 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
             .replace("export const default =", "export default")
             .replace('"use strict";', "");
 
-        return transformCJS(code + export_schema_code, interop);
+        return transformSchemaCode(code + export_schema_code, instance, interop);
     }
 
     /** Generate a schema validation code */
-    function getSchemaCode(ref: string, instance: string, interop = false) {
+    async function getSchemaCode(ref: string, instance: string, interop = false) {
         const ajv = ensureInstance(instance);
         const schema = ajv.getSchema(ref);
         if (!schema) {
@@ -208,7 +220,7 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
         }
 
         const code = generateAjvStandaloneCode(ajv, schema);
-        return transformCJS(code, interop);
+        return transformSchemaCode(code, instance, interop);
     }
 
     function getFileJsonSchemas(
@@ -287,11 +299,11 @@ export function initInstances(instances: Record<string, Ajv>) {
 
         addAjvKeywords(instance);
 
+        addAjvErrors(instance);
+
         const not_supported = ["instanceof", "uniqueItemProperties", "dynamicDefaults"];
 
         not_supported.forEach((keyword) => instance.removeKeyword(keyword));
-
-        addAjvErrors(instance);
     }
 }
 

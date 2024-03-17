@@ -65,6 +65,9 @@ export async function setupVite(opts: {
                             }
                         }
                     },
+                    transformCode(code, instance) {
+                        return `${code};export const exported_by_transform = true;`;
+                    },
                 },
                 ...(opts.pluginOptions?.plugins ?? []),
             ],

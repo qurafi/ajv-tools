@@ -69,6 +69,14 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
             const resolved = await plugins.transformFirst("resolveModule", mod, file);
             return resolved ?? mod;
         },
+        async transformCode(code, instance) {
+            const transformed = await plugins.transformFirst(
+                "transformCode",
+                code,
+                instance
+            );
+            return transformed ?? code;
+        },
         async resolveSchema(schema, file, name) {
             const transformed = await plugins.transformFirst(
                 "transformSchema",

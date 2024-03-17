@@ -1,6 +1,6 @@
-import { afterAll, describe, expect, it } from "vitest";
+import { afterAll, afterEach, describe, expect, it } from "vitest";
 import { setupVite } from "./helpers";
-import puppeteer from "puppeteer";
+import puppeteer, { Browser } from "puppeteer";
 import { type ErrorObject } from "ajv";
 
 describe("importing schemas", async () => {
@@ -40,6 +40,11 @@ describe("importing schemas", async () => {
     });
 
     const url = server.resolvedUrls?.local?.[0] as string;
+    let browser: Browser;
+
+    afterEach(async () => {
+        await browser?.close();
+    });
 
     it("should import a single schema by id", async () => {
         const module = await server.ssrLoadModule("$schemas:global_id");
@@ -69,7 +74,11 @@ describe("importing schemas", async () => {
 
     function validateDefaultExport(default_export: any) {
         const validate = default_export?.default;
-        expect(Object.keys(default_export)).toEqual(["default", "named"]);
+        expect(Object.keys(default_export)).toEqual([
+            "default",
+            "named",
+            "exported_by_transform",
+        ]);
         expect(validate).toBeTypeOf("function");
         expect(validate("test")).toBe(true);
         expect(validate({})).toBe(false);
@@ -136,7 +145,7 @@ describe("importing schemas", async () => {
 
     //TODO move it to a separate test
     async function testClientBuilds(invalid: boolean) {
-        const browser = await puppeteer.launch({
+        browser = await puppeteer.launch({
             headless: true,
         });
 
