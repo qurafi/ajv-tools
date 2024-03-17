@@ -117,7 +117,7 @@ suite("createAjvFileStore", () => {
     });
 
     it("getSchemaFileCode should return the code and validate correctly", async () => {
-        const code = store.getSchemaFileCode("default", "s/a.schema");
+        const code = await store.getSchemaFileCode("default", "s/a.schema");
         expect(code).toBeDefined();
 
         const tmp_path = path.resolve(__dirname, `./schema.tmp.${Date.now()}.js`);
@@ -128,8 +128,6 @@ suite("createAjvFileStore", () => {
 
         unlinkSync(tmp_path);
 
-        // yeah duplicate code from the above, we need some refactoring later
-        // TODO
         const valid_0 = module.a({ foo: "correct" });
 
         expect(valid_0).toBe(true);

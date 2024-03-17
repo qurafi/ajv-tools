@@ -138,13 +138,13 @@ export default createUnplugin((config: PluginOptions) => {
                         instance == "server"
                     );
                     if (!schemas) {
-                        throw new Error(`Could not find schema for file ${schema_path}`);
+                        throw new Error(`Could not find schemas for file ${schema_path}`);
                     }
                     const code = `export default ${JSON.stringify(schemas)}`;
                     return code;
                 }
 
-                const code = schema_builder.getSchemaFileCode(
+                const code = await schema_builder.getSchemaFileCode(
                     instance,
                     schema_path,
                     interop
@@ -164,7 +164,7 @@ export default createUnplugin((config: PluginOptions) => {
                     throw new Error("Schema id is not provided");
                 }
 
-                const code = schema_builder.getSchemaCode(id, instance, interop);
+                const code = await schema_builder.getSchemaCode(id, instance, interop);
                 return raw_code_if(code, raw_code);
             }
 
