@@ -1,5 +1,5 @@
 import Ajv from "ajv";
-import { red } from "kleur/colors";
+import { blue, red } from "kleur/colors";
 import { createRequire } from "node:module";
 import { logger } from "../utils/index.js";
 import { schema_opts } from "./ajv_options.js";
@@ -14,6 +14,7 @@ const ajv = new Ajv({ strictTypes: false, allErrors: true });
 export const isSchemaSecure = ajv.compile(secureMetaSchema);
 
 let secure_warn_context: Record<string, any> = {};
+let timeout: string | number | NodeJS.Timeout | undefined;
 
 export function warnAboutInsecure(file: string, export_name: string) {
     secure_warn_context[file] = {
@@ -21,21 +22,34 @@ export function warnAboutInsecure(file: string, export_name: string) {
         [export_name]: ajv.errorsText(isSchemaSecure.errors),
     };
 
-    Promise.resolve().then(() => {
+    clearTimeout(timeout);
+
+    // some build tools clear console during watch mode
+    timeout = setTimeout(() => {
         if (!Object.keys(secure_warn_context).length) {
             return;
         }
 
         logger.log(
             red("\nSECURITY:"),
-            `Some of the exported schemas are not secure:`,
-            secure_warn_context
+            `Some of the exported schemas are prone to DoS attacks:`
         );
+        logger.log(
+            "- Make sure to limit input size to avoid DoS attacks of some slow regex matching"
+        );
+        logger.log("- You could fix this by adding maxLength or maxItems");
+
+        logger.log("Validation Context:", secure_warn_context);
 
         logger.warn("allErrors option will be disabled for this schema");
 
+        logger.log(
+            "Learn more",
+            blue("https://ajv.js.org/security.html#security-risks-of-trusted-schemas")
+        );
+
         secure_warn_context = {};
-    });
+    }, 300);
 }
 
 export function checkForSchemaSecurity(schema: any, file: string, export_name: string) {
