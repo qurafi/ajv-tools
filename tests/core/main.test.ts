@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createAjvFileStore, enforcedAjvOptions } from "../../src/core/ajv";
+import { createAjvFileStore, enforcedAjvOptions } from "../../src/core/ajv.js";
 import Ajv from "ajv";
 
 describe("compile errors", () => {

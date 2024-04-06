@@ -1,15 +1,17 @@
-import Ajv from "ajv";
 import { blue, red } from "kleur/colors";
-import { createRequire } from "node:module";
 import { logger } from "../utils/index.js";
 import { schema_opts } from "./ajv_options.js";
-
-const secureMetaSchema = createRequire(__dirname)("ajv/lib/refs/json-schema-secure.json");
+import { Ajv } from "./deps.js";
+import { createRequire } from "module";
+const secureMetaSchema = createRequire(import.meta.url)(
+    "ajv/lib/refs/json-schema-secure.json"
+);
 
 // to prevent ReDos attack we will validate all schemas using this meta-schema
 // any insecure schemas will have allErrors disabled
 // so custom error message will not work
 // https://ajv.js.org/security.html#security-risks-of-trusted-schemas
+
 const ajv = new Ajv({ strictTypes: false, allErrors: true });
 export const isSchemaSecure = ajv.compile(secureMetaSchema);
 

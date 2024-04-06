@@ -1,7 +1,7 @@
 import { ensureArray, type MaybePromise, removeSchemaFileExt } from "../utils/index.js";
 import path from "node:path/posix";
 import esbuild, { type BuildOptions } from "esbuild";
-import { type ResolvedConfig } from ".";
+import { type ResolvedConfig } from "./index.js";
 import { pathToFileURL } from "node:url";
 import { createDebug } from "../utils/index.js";
 

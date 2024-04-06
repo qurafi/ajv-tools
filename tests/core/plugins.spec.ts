@@ -1,6 +1,6 @@
 import { setTimeout } from "node:timers/promises";
 import { beforeEach, describe, expect, it } from "vitest";
-import { createPluginContainer } from "./plugins.js";
+import { createPluginContainer } from "../../src/core/plugins/plugins.js";
 
 const timeout_duration = 25;
 

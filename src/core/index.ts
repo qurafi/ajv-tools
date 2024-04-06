@@ -1,21 +1,21 @@
 import type { Options as AjvOptions } from "ajv";
-import Ajv from "ajv";
 import FastGlob from "fast-glob";
 import micromatch from "micromatch";
 import path from "node:path";
 import { performance } from "node:perf_hooks";
-import { createDebug, ensureArray, posixify, resolvePatterns } from "../utils";
+import { createDebug, ensureArray, posixify, resolvePatterns } from "../utils/index.js";
 import {
     ajvOptionsClient,
     ajvOptionsServer,
     createAjvFileStore,
     enforcedAjvOptions,
     initInstances,
-} from "./ajv";
-import { defaultModuleLoader, type ModuleLoader } from "./loader";
+} from "./ajv.js";
+import { defaultModuleLoader, type ModuleLoader } from "./loader.js";
 import chokidar from "chokidar";
-import type { Plugin } from "./plugins/plugin.types";
+import type { Plugin } from "./plugins/plugin.types.js";
 import { createPluginContainer } from "./plugins/plugins.js";
+import { Ajv } from "./deps.js";
 
 const debug = createDebug("core");
 const debug_build = createDebug("build");

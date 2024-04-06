@@ -1,11 +1,12 @@
 import {
-    default as Ajv,
     type Options as AjvOptions,
     type InstanceOptions as AjvInstanceOptions,
 } from "ajv";
+
 import { createRequire } from "module";
-import { SchemaEnv } from "ajv/dist/compile";
-import { type compileSchema } from "ajv/dist/compile/index.js";
+import type { SchemaEnv } from "ajv/dist/compile";
+import type { compileSchema } from "ajv/dist/compile/index.js";
+import type { Ajv } from "./deps.js";
 
 export type AjvCompileOptions = Pick<
     AjvOptions,

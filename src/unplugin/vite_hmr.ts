@@ -1,6 +1,6 @@
 import type { ViteDevServer } from "vite";
-import type { Plugin, SchemaBuilder } from "../core";
-import { removeSchemaFileExt } from "../utils";
+import type { Plugin, SchemaBuilder } from "../core/index.js";
+import { removeSchemaFileExt } from "../utils/index.js";
 
 export default function viteHmrBuilderPlugin(server: ViteDevServer): Plugin {
     let schema_builder: SchemaBuilder;

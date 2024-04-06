@@ -1,8 +1,11 @@
 import type { Options as AjvOptions } from "ajv";
-import Ajv from "ajv";
-import addAjvErrors from "ajv-errors";
-import addFormats from "ajv-formats";
-import generateAjvStandaloneCode from "ajv/dist/standalone/index.js";
+import {
+    generateAjvStandaloneCode,
+    addAjvErrors,
+    addAjvFormats,
+    addAjvKeywords,
+    Ajv,
+} from "./deps.js";
 import rfdc from "rfdc";
 import { transformCJS } from "../utils/code/cjs_to_esm.js";
 import {
@@ -14,7 +17,6 @@ import {
 } from "../utils/index.js";
 import { type AjvCompileOptions, schema_opts } from "./ajv_options.js";
 import { checkForSchemaSecurity } from "./is_schema_secure.js";
-import addAjvKeywords from "ajv-keywords";
 
 const clone = rfdc();
 
@@ -277,7 +279,7 @@ export function createAjvFileStore(opts: AjvFilesStoreOptions) {
 
 export function initInstances(instances: Record<string, Ajv>) {
     for (const instance of Object.values(instances)) {
-        addFormats(instance, [
+        addAjvFormats(instance, [
             "date-time",
             "time",
             "date",

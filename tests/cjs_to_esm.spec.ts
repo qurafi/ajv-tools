@@ -4,7 +4,7 @@ import standaloneCode from "ajv/dist/standalone";
 import path from "node:path";
 import { createServer, type Plugin } from "vite";
 import { expect, suite, test } from "vitest";
-import { transformCJS } from "./cjs_to_esm";
+import { transformCJS } from "../src/utils/code/cjs_to_esm";
 
 const example_schema = {
     $id: "id",

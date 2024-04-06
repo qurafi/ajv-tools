@@ -2,8 +2,8 @@
     "compilerOptions": {
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
-        "moduleResolution": "node",
-        "module": "ES2022",
+        "moduleResolution": "Node16",
+        "module": "NodeNext",
         "target": "ES2020",
         "skipLibCheck": true,
         "sourceMap": true,
@@ -14,9 +14,9 @@
         "declarationMap": true,
         "noUnusedLocals": false,
         "noUnusedParameters": false,
-        "noEmit": true,
-        "verbatimModuleSyntax": true
+        "verbatimModuleSyntax": true,
+        "outDir": "dist"
     },
-    "include": ["src", "*.d.ts", "types/*.d.ts", "tests"],
+    "include": ["src", "types/*.d.ts"],
     "exclude": ["dist", "tests/fixtures"]
 }
