@@ -2,7 +2,6 @@
 
 set -e
 
-pnpm install --frozen-lockfile
 pnpm publint
 pnpm biome ci
 pnpm tsc --noEmit
