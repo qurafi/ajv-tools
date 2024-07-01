@@ -1,7 +1,7 @@
 {
 	"name": "ajv-build-tools",
 	"description": "A tool to manage compiling json schemas with ajv to integrate with build tools like rollup and vite",
-	"version": "1.0.0-next.7",
+	"version": "1.0.0-next.8",
 	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"type": "module",
@@ -28,7 +28,13 @@
 			"types": "./types/index.d.ts"
 		}
 	},
-	"files": ["dist", "src", "types/*.d.ts", "README.md", "LICENSE"],
+	"files": [
+		"dist",
+		"src",
+		"types/*.d.ts",
+		"README.md",
+		"LICENSE"
+	],
 	"scripts": {
 		"test": "DEBUG_COLORS=1 vitest",
 		"test:ci": "vitest",
