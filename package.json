@@ -28,13 +28,7 @@
 			"types": "./types/index.d.ts"
 		}
 	},
-	"files": [
-		"dist",
-		"src",
-		"types/*.d.ts",
-		"README.md",
-		"LICENSE"
-	],
+	"files": ["dist", "src", "types/*.d.ts", "README.md", "LICENSE"],
 	"scripts": {
 		"test": "DEBUG_COLORS=1 vitest",
 		"test:ci": "vitest",
