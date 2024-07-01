@@ -1,4 +1,4 @@
 export default {
-    type: "string",
-    minLength: 1,
+	type: "string",
+	minLength: 1,
 };

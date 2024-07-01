@@ -1,10 +1,10 @@
 export default {
-    type: "string",
+	type: "string",
 };
 
 export const named = {
-    $$meta: {
-        a: "removed from ajv instance but visible for builder",
-    },
-    type: "number",
+	$$meta: {
+		a: "removed from ajv instance but visible for builder",
+	},
+	type: "number",
 };

@@ -3,7 +3,7 @@
 set -e
 
 pnpm install --frozen-lockfile
-pnpm lint
-pnpm tscheck
 pnpm publint
+pnpm biome ci
+pnpm tsc --noEmit
 pnpm test -- --run

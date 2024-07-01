@@ -1,3 +1,3 @@
 export const user = {
-    type: "string",
+	type: "string",
 };

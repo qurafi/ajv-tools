@@ -1,7 +1,7 @@
 export const defaults = {
-    type: "object",
-    properties: {
-        a: { type: "number" },
-        b: { type: "string" },
-    },
+	type: "object",
+	properties: {
+		a: { type: "number" },
+		b: { type: "string" },
+	},
 };

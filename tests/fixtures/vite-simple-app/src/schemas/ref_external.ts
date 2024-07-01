@@ -1,3 +1,3 @@
 export default {
-    $ref: "http://api.example.com/Message",
+	$ref: "http://api.example.com/Message",
 };

@@ -11,35 +11,35 @@ import type { ResolveModule, ResolveSchema, TransformCode } from "../ajv.js";
 export type TransformSchema = ResolveSchema;
 
 export interface SchemaBuilderHooks {
-    /** after resolving config and everything is ready */
-    init(ctx: { config: ResolvedConfig; builder: SchemaBuilder }): void;
+	/** after resolving config and everything is ready */
+	init(ctx: { config: ResolvedConfig; builder: SchemaBuilder }): void;
 
-    /** When file change handled */
-    onFile(ctx: {
-        builder: SchemaBuilder;
+	/** When file change handled */
+	onFile(ctx: {
+		builder: SchemaBuilder;
 
-        config: ResolvedConfig;
+		config: ResolvedConfig;
 
-        update: UpdateType;
+		update: UpdateType;
 
-        file: string;
-        relativePath: string;
+		file: string;
+		relativePath: string;
 
-        initial: boolean;
+		initial: boolean;
 
-        /** affected schemas <export name, schema> */
-        //TODO
-        // schemas: Record<string, any>;
-    }): void;
+		/** affected schemas <export name, schema> */
+		//TODO
+		// schemas: Record<string, any>;
+	}): void;
 
-    resolveModule: ResolveModule;
+	resolveModule: ResolveModule;
 
-    transformSchema: ResolveSchema;
+	transformSchema: ResolveSchema;
 
-    resolveSchema: ResolveSchema;
+	resolveSchema: ResolveSchema;
 
-    transformCode: TransformCode;
+	transformCode: TransformCode;
 
-    buildEnd(builder: SchemaBuilder): void;
+	buildEnd(builder: SchemaBuilder): void;
 }
 export type Plugin = Partial<SchemaBuilderHooks>;

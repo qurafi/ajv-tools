@@ -1,8 +1,8 @@
-import standalone from "ajv/dist/standalone/index.js";
+import AjvMod from "ajv";
 import AjvErrors from "ajv-errors";
 import AjvFormats from "ajv-formats";
 import AjvKeywords from "ajv-keywords";
-import AjvMod from "ajv";
+import standalone from "ajv/dist/standalone/index.js";
 
 export const generateAjvStandaloneCode = standalone.default;
 export const addAjvFormats = AjvFormats.default;

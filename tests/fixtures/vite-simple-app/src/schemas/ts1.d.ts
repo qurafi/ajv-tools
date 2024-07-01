@@ -1,11 +1,11 @@
 // Edit TypeScript Types Here
 
 interface X {
-    b: number;
+	b: number;
 }
 
 export interface ref {
-    a: number;
+	a: number;
 }
 /**
  *
@@ -14,27 +14,27 @@ export interface ref {
  *
  */
 export interface Vector {
-    /**
-     * @minimum 2
-     * @maximum 4
-     * @default 0
-     */
-    x: number;
-    /**
-     * @minimum 0
-     * @maximum 1
-     * @default 1
-     */
-    y: number;
+	/**
+	 * @minimum 2
+	 * @maximum 4
+	 * @default 0
+	 */
+	x: number;
+	/**
+	 * @minimum 0
+	 * @maximum 1
+	 * @default 1
+	 */
+	y: number;
 
-    z: number;
+	z: number;
 
-    /*
+	/*
     @ref $ref
   */
-    c: ref;
+	c: ref;
 
-    s: string | number;
+	s: string | number;
 
-    e: [string][] | X;
+	e: [string][] | X;
 }

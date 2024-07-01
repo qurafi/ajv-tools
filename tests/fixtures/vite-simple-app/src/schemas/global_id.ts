@@ -1,4 +1,4 @@
 export const withId = {
-    $id: "global_id",
-    type: "string",
+	$id: "global_id",
+	type: "string",
 };

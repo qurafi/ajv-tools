@@ -1,4 +1,4 @@
 export interface External {
-    a: number;
-    b: boolean;
+	a: number;
+	b: boolean;
 }
