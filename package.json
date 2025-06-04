@@ -39,38 +39,38 @@
 		"tscheck": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@sinclair/typebox": "^0.32.34",
-		"ajv": "^8.16.0",
+		"@sinclair/typebox": "^0.32.35",
+		"ajv": "^8.17.1",
 		"ajv-errors": "^3.0.0",
 		"ajv-formats": "^3.0.1",
 		"ajv-keywords": "^5.1.0",
 		"chokidar": "^3.6.0",
-		"debug": "^4.3.5",
-		"esbuild": "^0.25.2",
-		"fast-glob": "^3.3.2",
-		"fs-extra": "^11.2.0",
+		"debug": "^4.4.1",
+		"esbuild": "^0.25.5",
+		"fast-glob": "^3.3.3",
+		"fs-extra": "^11.3.0",
 		"kleur": "^4.1.5",
-		"micromatch": "^4.0.7",
+		"micromatch": "^4.0.8",
 		"rfdc": "^1.4.1",
-		"tinyglobby": "^0.2.12",
-		"unplugin": "^2.3.2"
+		"tinyglobby": "^0.2.14",
+		"unplugin": "^2.3.5"
 	},
 	"peerDependencies": {
 		"vite": "6.x"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^1.8.3",
+		"@biomejs/biome": "^1.9.4",
 		"@types/debug": "^4.1.12",
 		"@types/fs-extra": "^11.0.4",
 		"@types/micromatch": "^4.0.9",
-		"@types/node": "^18.19.39",
+		"@types/node": "^18.19.110",
 		"fs-extra": "^11.1.1",
 		"prettier": "^3.5.3",
-		"publint": "^0.2.8",
-		"puppeteer": "^22.12.1",
-		"typescript": "^5.5.3",
-		"vite": "^6.3.2",
-		"vitest": "^3.1.1"
+		"publint": "^0.3.12",
+		"puppeteer": "^24.10.0",
+		"typescript": "^5.8.3",
+		"vite": "^6.3.5",
+		"vitest": "^3.2.1"
 	},
 	"packageManager": "pnpm@8.2.0"
 }
