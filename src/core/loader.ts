@@ -4,6 +4,7 @@ import esbuild, { type BuildOptions } from "esbuild";
 import {
 	type MaybePromise,
 	ensureArray,
+	logger,
 	removeSchemaFileExt,
 } from "../utils/index.js";
 import { createDebug } from "../utils/index.js";
@@ -76,17 +77,28 @@ loader.build = async (
 
 	debug("default loader: bundling sources ", files);
 
-	await esbuild.build({
-		entryPoints: ensureArray(files),
-		outdir: cache_path,
-		outbase: ".",
-		absWorkingDir: config.root,
-		format: "esm",
-		platform: "node",
-		bundle: true,
-		outExtension: { ".js": ".mjs" },
-		...esbuildOptions,
-	});
+	try {
+		await esbuild.build({
+			entryPoints: ensureArray(files),
+			outdir: cache_path,
+			outbase: ".",
+			absWorkingDir: config.root,
+			format: "esm",
+			platform: "node",
+			bundle: true,
+			outExtension: { ".js": ".mjs" },
+			...esbuildOptions,
+		});
+	} catch (error) {
+		logger.error("failed to load schema files", files);
+		logger.log(
+			"- Please make sure the schema source file does not rely on virtual modules or environment specific paths such as $env",
+		);
+		logger.log(
+			"- We use ESBuild to bundle schema files to compile them into code before your code actually bundled in the production build.",
+		);
+		throw error;
+	}
 
 	return files.map((file) => [
 		file,

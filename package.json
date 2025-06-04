@@ -42,19 +42,21 @@
 		"@sinclair/typebox": "^0.32.34",
 		"ajv": "^8.16.0",
 		"ajv-errors": "^3.0.0",
-		"ajv-formats": "3.0.0-rc.0",
+		"ajv-formats": "^3.0.1",
 		"ajv-keywords": "^5.1.0",
+		"chokidar": "^3.6.0",
 		"debug": "^4.3.5",
-		"esbuild": "^0.17.19",
+		"esbuild": "^0.25.2",
 		"fast-glob": "^3.3.2",
 		"fs-extra": "^11.2.0",
 		"kleur": "^4.1.5",
 		"micromatch": "^4.0.7",
 		"rfdc": "^1.4.1",
-		"unplugin": "^1.11.0"
+		"tinyglobby": "^0.2.12",
+		"unplugin": "^2.3.2"
 	},
 	"peerDependencies": {
-		"vite": ">=4"
+		"vite": "6.x"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.8.3",
@@ -66,8 +68,8 @@
 		"publint": "^0.2.8",
 		"puppeteer": "^22.12.1",
 		"typescript": "^5.5.3",
-		"vite": "^5.0.4",
-		"vitest": "^1.6.0"
+		"vite": "^6.3.2",
+		"vitest": "^3.1.1"
 	},
 	"packageManager": "pnpm@8.2.0"
 }
