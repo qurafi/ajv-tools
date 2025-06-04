@@ -6,7 +6,7 @@ describe("handling schema options", async () => {
 	const { server } = await setupVite({ fixture: "vite-simple-app" });
 
 	async function testErrors(single: boolean, mod?: string) {
-		const schema = mod ?? single ? "single_error" : "multiple_errors";
+		const schema = (mod ?? single) ? "single_error" : "multiple_errors";
 		const m = await server.ssrLoadModule(`$schemas/schemas/${schema}`);
 		const validate = m.default;
 
