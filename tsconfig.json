@@ -15,7 +15,8 @@
 		"noUnusedLocals": false,
 		"noUnusedParameters": false,
 		"verbatimModuleSyntax": true,
-		"outDir": "dist"
+		"rootDir": "./src",
+		"outDir": "./dist"
 	},
 	"include": ["src", "types/*.d.ts"],
 	"exclude": ["dist", "tests/fixtures"]
