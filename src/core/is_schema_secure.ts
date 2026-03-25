@@ -1,5 +1,5 @@
 import { createRequire } from "node:module";
-import { blue, red } from "kleur/colors";
+import { styleText } from 'node:util';
 import { logger } from "../utils/index.js";
 import { schema_opts } from "./ajv_options.js";
 import { Ajv } from "./deps.js";
@@ -34,7 +34,10 @@ export function warnAboutInsecure(file: string, export_name: string) {
 		}
 
 		logger.log(
-			red("\nSECURITY:"),
+			styleText(
+				['red'],
+				"\nSECURITY:"
+			),
 			"Some of the exported schemas are prone to DoS attacks:",
 		);
 		logger.log(
@@ -48,8 +51,9 @@ export function warnAboutInsecure(file: string, export_name: string) {
 
 		logger.log(
 			"Learn more",
-			blue(
-				"https://ajv.js.org/security.html#security-risks-of-trusted-schemas",
+			styleText(
+				['blue'],
+				"https://ajv.js.org/security.html#security-risks-of-trusted-schemas"
 			),
 		);
 
