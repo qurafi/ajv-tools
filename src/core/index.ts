@@ -2,7 +2,7 @@ import path from "node:path";
 import { performance } from "node:perf_hooks";
 import type { Options as AjvOptions } from "ajv";
 import chokidar from "chokidar";
-import FastGlob from "fast-glob";
+import { glob } from "tinyglobby";
 import micromatch from "micromatch";
 import {
 	createDebug,
@@ -177,10 +177,11 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
 	}
 
 	async function build(outDir?: string) {
-		const files = await FastGlob(include, {
+		const files = await glob(include, {
 			cwd: root,
-			absolute: false,
+			absolute: true,
 			ignore: exclude,
+			expandDirectories: false
 		});
 
 		debug_build("building: ", files);
