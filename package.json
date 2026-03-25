@@ -54,7 +54,6 @@
 		"debug": "^4.4.3",
 		"esbuild": "^0.27.4",
 		"fast-glob": "^3.3.3",
-		"fs-extra": "^11.3.4",
 		"kleur": "^4.1.5",
 		"micromatch": "^4.0.8",
 		"rfdc": "^1.4.1",
@@ -67,10 +66,8 @@
 	"devDependencies": {
 		"@biomejs/biome": "^2.4.8",
 		"@types/debug": "^4.1.13",
-		"@types/fs-extra": "^11.0.4",
 		"@types/micromatch": "^4.0.10",
 		"@types/node": "^22.19.15",
-		"fs-extra": "^11.3.4",
 		"prettier": "^3.8.1",
 		"publint": "^0.3.18",
 		"puppeteer": "^24.40.0",
