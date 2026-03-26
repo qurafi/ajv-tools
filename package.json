@@ -73,10 +73,5 @@
 		"vite": "^8.0.3",
 		"vitest": "^4.1.1"
 	},
-	"pnpm": {
-		"overrides": {
-			"picomatch": "^4.0.4"
-		}
-	},
 	"packageManager": "pnpm@10.32.0+"
 }
