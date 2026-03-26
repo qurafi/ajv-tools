@@ -1,5 +1,5 @@
 import path from "node:path/posix";
-import createDebugger from "debug";
+import { createDebug as createDebugger } from "obug";
 import { styleText } from "node:util";
 
 export type MaybePromise<T> = Promise<T> | T;
