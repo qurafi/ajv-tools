@@ -4,7 +4,7 @@ import type { Options as AjvOptions } from "ajv";
 import chokidar from "chokidar";
 import type { FSWatcher } from "chokidar";
 import { glob } from "tinyglobby";
-import micromatch from "micromatch";
+import picomatch from "picomatch";
 import {
 	createDebug,
 	ensureArray,
@@ -167,7 +167,7 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
 	function isSchemaFile(file: string) {
 		const relative = path.posix.join(root_base, file);
 
-		return micromatch.isMatch(
+		return picomatch.isMatch(
 			path.isAbsolute(file) ? file : relative,
 			include,
 			{
