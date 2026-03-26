@@ -3,3 +3,4 @@ node_modules
 dist
 .pnpm-debug.log
 packages/*/tests/fixtures/tmp
+*.snap
