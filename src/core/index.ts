@@ -2,7 +2,8 @@ import path from "node:path";
 import { performance } from "node:perf_hooks";
 import type { Options as AjvOptions } from "ajv";
 import chokidar from "chokidar";
-import type { FSWatcher } from "chokidar";
+import type { FSWatcher as chokidarFSWatcher} from "chokidar";
+import type { FSWatcher as viteFSWatcher} from "vite";
 import { glob } from "tinyglobby";
 import picomatch from "picomatch";
 import {
@@ -212,7 +213,7 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
 		throw new Error("not implemented yet");
 	}
 
-	function watch(watchParams: { watcher?: FSWatcher }) {
+	function watch(watchParams: { watcher?: chokidarFSWatcher | viteFSWatcher }) {
 		if (!watchParams.watcher) {
 			watchParams.watcher = chokidar.watch(include, {
 				ignoreInitial: true,

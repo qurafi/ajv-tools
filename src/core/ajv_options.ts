@@ -3,8 +3,7 @@ import type {
 	InstanceOptions as AjvInstanceOptions,
 	Options as AjvOptions,
 } from "ajv";
-import type { SchemaEnv } from "ajv/dist/compile";
-import type { compileSchema } from "ajv/dist/compile/index.js";
+import type { compileSchema, SchemaEnv } from "ajv/dist/compile/index.js";
 import type { Ajv } from "./deps.js";
 
 export type AjvCompileOptions = Pick<
