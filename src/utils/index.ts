@@ -1,6 +1,6 @@
 import path from "node:path/posix";
-import createDebugger from "debug";
-import { red, yellow } from "kleur/colors";
+import { createDebug as createDebugger } from "obug";
+import { styleText } from "node:util";
 
 export type MaybePromise<T> = Promise<T> | T;
 export type UnstrictReturnType<T> = T extends (...args: any) => infer R
@@ -46,8 +46,10 @@ export function parseQueries(str: string) {
 }
 
 export const logger = {
-	error: (...args: any[]) => console.error(red("error:"), ...args),
-	warn: (...args: any[]) => console.error(yellow("warn: "), ...args),
+	error: (...args: any[]) =>
+		console.error(styleText(["red"], "error:"), ...args),
+	warn: (...args: any[]) =>
+		console.error(styleText(["yellow"], "warn: "), ...args),
 	log: console.log,
 };
 

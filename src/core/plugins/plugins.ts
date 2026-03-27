@@ -91,7 +91,7 @@ export async function createPluginContainer<PluginDefs>(
 					.map((v) => {
 						if (v.status === "rejected") {
 							handleError(action, v.reason);
-							return;
+							return undefined;
 						}
 						return v.value;
 					})

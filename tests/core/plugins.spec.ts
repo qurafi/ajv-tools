@@ -184,28 +184,26 @@ it("transform first args", async () => {
 });
 
 function testConcurrent(concurrent: boolean) {
-	it(
-		`should invoke concurrently when concurrent is ${concurrent}`,
-		{ retry: 3 },
-		async () => {
-			const { container } = await setupContainer();
-			const start = Date.now();
+	it(`should invoke concurrently when concurrent is ${concurrent}`, {
+		retry: 3,
+	}, async () => {
+		const { container } = await setupContainer();
+		const start = Date.now();
 
-			await container.invoke(
-				{
-					action: "onSomething",
-					concurrent,
-				},
-				{ n: 0 },
-			);
+		await container.invoke(
+			{
+				action: "onSomething",
+				concurrent,
+			},
+			{ n: 0 },
+		);
 
-			const elapsed = Date.now() - start;
-			const expected = concurrent ? timeout_duration : timeout_duration * 3;
+		const elapsed = Date.now() - start;
+		const expected = concurrent ? timeout_duration : timeout_duration * 3;
 
-			const e = process.env.CI ? 100 : 15;
-			expect(elapsed >= expected - e && elapsed <= expected + e).toBe(true);
-		},
-	);
+		const e = process.env.CI ? 100 : 15;
+		expect(elapsed >= expected - e && elapsed <= expected + e).toBe(true);
+	});
 }
 
 testConcurrent(true);

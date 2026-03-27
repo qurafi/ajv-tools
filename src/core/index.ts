@@ -2,8 +2,10 @@ import path from "node:path";
 import { performance } from "node:perf_hooks";
 import type { Options as AjvOptions } from "ajv";
 import chokidar from "chokidar";
-import FastGlob from "fast-glob";
-import micromatch from "micromatch";
+import type { FSWatcher as chokidarFSWatcher } from "chokidar";
+import type { FSWatcher as viteFSWatcher } from "vite";
+import { glob } from "tinyglobby";
+import picomatch from "picomatch";
 import {
 	createDebug,
 	ensureArray,
@@ -166,21 +168,18 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
 	function isSchemaFile(file: string) {
 		const relative = path.posix.join(root_base, file);
 
-		return micromatch.isMatch(
-			path.isAbsolute(file) ? file : relative,
-			include,
-			{
-				cwd: root_,
-				ignore: exclude,
-			},
-		);
+		return picomatch.isMatch(path.isAbsolute(file) ? file : relative, include, {
+			cwd: root_,
+			ignore: exclude,
+		});
 	}
 
 	async function build(outDir?: string) {
-		const files = await FastGlob(include, {
+		const files = await glob(include, {
 			cwd: root,
-			absolute: false,
+			absolute: true,
 			ignore: exclude,
+			expandDirectories: false,
 		});
 
 		debug_build("building: ", files);
@@ -210,7 +209,7 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
 		throw new Error("not implemented yet");
 	}
 
-	function watch(watchParams: { watcher?: chokidar.FSWatcher }) {
+	function watch(watchParams: { watcher?: chokidarFSWatcher | viteFSWatcher }) {
 		if (!watchParams.watcher) {
 			watchParams.watcher = chokidar.watch(include, {
 				ignoreInitial: true,

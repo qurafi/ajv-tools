@@ -67,29 +67,26 @@ suite("ajv options per schema", async () => {
 	});
 
 	//TODO
-	it.todo(
-		"errors should not conflicts when reference other schema",
-		async () => {
-			const ref2a = ajv.getSchema("file://s/ref2a/default.json");
+	it.todo("errors should not conflicts when reference other schema", async () => {
+		const ref2a = ajv.getSchema("file://s/ref2a/default.json");
 
-			const code = standaloneCode(ajv, ref2a);
-			const tmp_path = resolve(__dirname, "./ref2a.tmp.js");
+		const code = standaloneCode(ajv, ref2a);
+		const tmp_path = resolve(__dirname, "./ref2a.tmp.js");
 
-			writeFileSync(tmp_path, code);
+		writeFileSync(tmp_path, code);
 
-			const module = await import(tmp_path);
-			const validate = module.validate;
+		const module = await import(tmp_path);
+		const validate = module.validate;
 
-			validate?.({
-				a: {
-					foo: "string",
-					bar: 1,
-				},
-				b: 1,
-				c: true,
-			});
-		},
-	);
+		validate?.({
+			a: {
+				foo: "string",
+				bar: 1,
+			},
+			b: 1,
+			c: true,
+		});
+	});
 });
 
 const modules = {
