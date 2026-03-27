@@ -46,8 +46,10 @@ export function parseQueries(str: string) {
 }
 
 export const logger = {
-	error: (...args: any[]) => console.error(styleText(['red'], "error:"), ...args),
-	warn: (...args: any[]) => console.error(styleText(['yellow'], "warn: "), ...args),
+	error: (...args: any[]) =>
+		console.error(styleText(["red"], "error:"), ...args),
+	warn: (...args: any[]) =>
+		console.error(styleText(["yellow"], "warn: "), ...args),
 	log: console.log,
 };
 

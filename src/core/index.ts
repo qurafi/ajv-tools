@@ -2,8 +2,8 @@ import path from "node:path";
 import { performance } from "node:perf_hooks";
 import type { Options as AjvOptions } from "ajv";
 import chokidar from "chokidar";
-import type { FSWatcher as chokidarFSWatcher} from "chokidar";
-import type { FSWatcher as viteFSWatcher} from "vite";
+import type { FSWatcher as chokidarFSWatcher } from "chokidar";
+import type { FSWatcher as viteFSWatcher } from "vite";
 import { glob } from "tinyglobby";
 import picomatch from "picomatch";
 import {
@@ -168,14 +168,10 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
 	function isSchemaFile(file: string) {
 		const relative = path.posix.join(root_base, file);
 
-		return picomatch.isMatch(
-			path.isAbsolute(file) ? file : relative,
-			include,
-			{
-				cwd: root_,
-				ignore: exclude,
-			},
-		);
+		return picomatch.isMatch(path.isAbsolute(file) ? file : relative, include, {
+			cwd: root_,
+			ignore: exclude,
+		});
 	}
 
 	async function build(outDir?: string) {
@@ -183,7 +179,7 @@ export async function createSchemaBuilder(opts: SchemaBuilderOptions) {
 			cwd: root,
 			absolute: true,
 			ignore: exclude,
-			expandDirectories: false
+			expandDirectories: false,
 		});
 
 		debug_build("building: ", files);

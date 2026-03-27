@@ -1,6 +1,6 @@
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { mkdirSync } from 'node:fs'
+import { mkdirSync } from "node:fs";
 import { setTimeout } from "node:timers/promises";
 import { type InlineConfig, createServer } from "vite";
 import unpluginAjv, { type PluginOptions } from "../../src/unplugin";
