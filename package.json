@@ -40,7 +40,7 @@
 		"test:ci": "vitest",
 		"build": "tsc",
 		"format": "biome format --write",
-		"lint": "biome lint",
+		"lint": "biome check",
 		"dev": "tsc -w",
 		"tscheck": "tsc --noEmit"
 	},
