@@ -1,4 +1,4 @@
 allowBuilds:
-  '@biomejs/biome': true
-  esbuild: true
-  puppeteer: true
+    "@biomejs/biome": true
+    esbuild: true
+    puppeteer: true
